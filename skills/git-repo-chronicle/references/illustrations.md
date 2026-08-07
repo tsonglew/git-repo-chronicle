@@ -4,7 +4,7 @@
 
 ## 风格定义
 
-所有插图共用一个风格前缀,保证全篇一致:
+所有插图共用一个风格前缀,保证全篇一致。
 
 ```text
 Hand-drawn illustration in the style of a vintage chronicle book. Ink sketch with light watercolor wash, aged paper texture, muted sepia and indigo palette, storytelling scene, atmospheric, no text, no watermark, no logo.
@@ -14,7 +14,7 @@ Hand-drawn illustration in the style of a vintage chronicle book. Ink sketch wit
 
 ## 配置
 
-用户提供三项,设成环境变量:
+用户提供三项,设成环境变量。
 
 ```bash
 export ILLUSTRATION_BASE_URL="https://api.example.com/v1"
@@ -34,7 +34,7 @@ scripts/generate_illustration.sh "风格前缀 + 主题" docs/notes/images/2020-
 
 ## 主题清单
 
-按章节给建议,实际按项目内容调整:
+按章节给建议,实际按项目内容调整。
 
 | 位置 | 建议主题 |
 |---|---|
@@ -48,7 +48,7 @@ scripts/generate_illustration.sh "风格前缀 + 主题" docs/notes/images/2020-
 
 ## 图片嵌入
 
-图片统一放 `docs/notes/images/`,Markdown 相对路径引用:
+图片统一放 `docs/notes/images/`,Markdown 相对路径引用。
 
 ```markdown
 ![2020 年架构迁移后的服务端](images/2020-migration.png)
