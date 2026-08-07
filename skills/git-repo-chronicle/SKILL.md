@@ -56,6 +56,7 @@ version: 0.1.0
 - §11 论坛回声。写与 git 主线并行的社区史,包含热度对照表与互文时刻。
 - 附录。写 PR 时间线(★ 标重大事件)、本地 fork 提交清单、论坛数据。
 - 配图。按 `references/diagrams.md` 的规范配 Mermaid 图,默认 timeline 和 flowchart。§0 画生命周期 timeline,架构转型章画迁移前后对比,里程碑章画架构快照,§11 画互文时刻流程。图里数字与正文一致。
+- 插图(可选)。用户提供了生图配置(ILLUSTRATION_BASE_URL、ILLUSTRATION_API_KEY、ILLUSTRATION_MODEL)时,按 `references/illustrations.md` 生成手绘风插图,统一放 `docs/notes/images/` 并嵌入对应章节。缺配置或生成失败就跳过,不阻塞交稿,在回复里说明原因。
 - 文末。写数据方法论注记(口径、推断、覆盖率)。
 
 写作风格要求是双线并行不混写、微观提交与宏观判断结合、每条论断可溯源(提交哈希 / issue 编号 / URL)、未证实推断显式标注且绝不编造、戏剧化叙事可用但必须以事实为骨。
@@ -67,6 +68,7 @@ version: 0.1.0
 3. 附录完整性。PR 时间线覆盖所有带编号的提交;论坛数据附录含年份分布与热门帖 TOP N。
 4. 确认所有推断都有标注;成品保存到阶段 0 约定的路径,并在回复中给出文件路径与全文概述。
 5. 配图核对。每张图与正文数据一致,每条连线在正文里有对应陈述,Mermaid 语法能在 GitHub 渲染。
+6. 插图检查。插了图的,确认图片文件存在、Markdown 引用路径正确、全篇风格一致(手绘编年史风)。
 
 ## 大仓库与无权限场景
 
@@ -81,11 +83,13 @@ version: 0.1.0
 - **`references/chronicle-structure.md`** 编年史结构模板与写作风格,含题头、全景数字表、人物图鉴、按年章节骨架、提交行模板、论坛回声与附录规范。
 - **`references/data-sources.md`** 六类数据源的具体命令与 API,含 RSS 地址、gh 用法、速率限制、身份比对方法、大仓库策略与检索策略。
 - **`references/diagrams.md`** 配图规范,含图类型与位置、Mermaid 写法示例、独立图片导出与校验。
+- **`references/illustrations.md`** 插图规范,含风格前缀、配置方法、章节主题清单、失败降级与校验。
 
 ### Scripts
 
 - **`scripts/dump_git_history.sh`** 导出 git 提交为 TSV,并生成年度与作者统计。
 - **`scripts/fetch_github_meta.sh`** 用 gh 拉取 release、issue、PR 元数据,无 gh 时给出 API 兜底提示。
+- **`scripts/generate_illustration.sh`** 调用生图 API 生成手绘风插图,支持 url 与 b64_json 两种响应。
 
 ### Examples
 

@@ -40,6 +40,8 @@ Zircon 项目有一篇[开发编年史笔记](https://github.com/iamcheyan/Zirco
 
 AI 会先克隆仓库,用脚本把提交和元数据导出,再检索 release、issue、论坛、RSS、新闻,按年归纳,照模板成文,最后逐条核对来源。
 
+想让成稿带手绘风插图,给 AI 生图服务的 base_url、api_key、model 三项配置(OpenAI 兼容接口即可),它会按编年史风格给封面和章节配图。没有配置会自动跳过,不影响出稿。
+
 ## 数据从哪来
 
 六类来源。
