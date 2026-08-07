@@ -1,0 +1,10 @@
+{
+  "name": "git-repo-chronicle",
+  "version": "0.1.0",
+  "description": "将 GitHub 项目的提交历史与 release、issue、论坛讨论、RSS、新闻及时代背景结合,自动撰写《项目开发编年史》",
+  "skills": {
+    "git-repo-chronicle": {
+      "file": "skills/git-repo-chronicle/SKILL.md"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "name": "git-repo-chronicle",
+  "version": "0.1.0",
+  "description": "一键安装 git-repo-chronicle 项目开发编年史技能到 Claude Code / Codex / Cursor(Agent Skills)",
+  "license": "MIT",
+  "type": "commonjs",
+  "bin": {
+    "git-repo-chronicle": "./install.js"
+  },
+  "files": [
+    "skills",
+    "install.js",
+    "install.sh",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=16.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tsonglew/git-repo-chronicle.git"
+  },
+  "keywords": [
+    "claude-code",
+    "codex",
+    "cursor",
+    "agent-skills",
+    "skill",
+    "chronicle",
+    "project-history",
+    "git"
+  ],
+  "scripts": {
+    "test": "node --check install.js"
+  }
+}
