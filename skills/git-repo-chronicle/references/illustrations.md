@@ -4,13 +4,15 @@
 
 ## 风格定义
 
-所有插图共用一个风格前缀,保证全篇一致。
+默认所有插图共用一个风格前缀,保证全篇一致。
 
 ```text
 Hand-drawn illustration in the style of a vintage chronicle book. Ink sketch with light watercolor wash, aged paper texture, muted sepia and indigo palette, storytelling scene, atmospheric, no text, no watermark, no logo.
 ```
 
-主题描述接在风格前缀后面,写具体场景。主题按项目实际写,英文优先,中文亦可。
+用户给了自己的风格描述时(如"水墨风""版画风""赛博朋克"),用自己的描述替换风格前缀,主题部分照旧。风格定下后全篇统一,不要每章换一种。
+
+主题描述接在风格前缀后面,写具体场景。主题按项目实际写,英文优先,中文亦可。用户指定了主题清单,就按用户的画,不用下面的默认清单。
 
 ## 配置
 
@@ -22,7 +24,7 @@ export ILLUSTRATION_API_KEY="sk-xxxx"
 export ILLUSTRATION_MODEL="gpt-image-1"
 ```
 
-协议是 OpenAI 兼容的 images/generations,大多数服务都支持,包括各类中转与本地部署。
+协议是 OpenAI 兼容的 images/generations,大多数服务都支持,包括各类中转与本地部署。模型能否生图以平台实际为准,报"不支持文生图"时问用户要平台可用的模型名,或从 `/v1/models` 列表里挑。
 
 ## 调用
 
@@ -34,7 +36,7 @@ scripts/generate_illustration.sh "风格前缀 + 主题" docs/notes/images/2020-
 
 ## 主题清单
 
-按章节给建议,实际按项目内容调整。
+按章节给建议,实际按项目内容调整。用户指定了主题时以用户为准。
 
 | 位置 | 建议主题 |
 |---|---|

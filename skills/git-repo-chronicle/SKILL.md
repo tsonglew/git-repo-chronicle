@@ -18,13 +18,39 @@ version: 0.1.0
 
 ## 工作流程
 
-### 阶段 0 确认范围
+### 阶段 0 确认范围与偏好
 
-1. 与用户确认仓库地址或本地路径、输出语言(默认中文)、时间范围(默认全部)、输出文件路径。
-2. 克隆仓库到临时目录,命令是 `git clone --quiet <url> /tmp/<repo>-chronicle`;本地路径直接使用。
-3. 粗查规模,看 `git log --oneline | wc -l` 与首末提交日期。提交数超过 5000 时采用抽样策略(见 `references/data-sources.md`「大仓库策略」),并在文末方法论中标注口径。
+1. 与用户确认仓库地址或本地路径。
+2. 过一遍偏好。用户可能一次给全,也可能只说改动的部分。下面这张表是所有可配置项与默认值,没提到的项用默认,不用逐个问。
+
+| 配置项 | 默认 | 可选 |
+|---|---|---|
+| 目标语言 | 中文 | 中文、英文、中英对照 |
+| 时间范围 | 全部历史 | 指定年份区间 |
+| 篇幅深度 | 完整版 | 完整版、精编版(每章只留代表性提交) |
+| 叙事重点 | 均衡 | 技术架构、社区故事、人物传记、均衡 |
+| 结构模板 | 完整 | 完整、精简(去掉论坛回声与附录) |
+| 提交粒度 | 逐条 | 逐条、按批次 |
+| 数据源 | 全部六类 | 全部、仅 git 提交、指定类别 |
+| Mermaid 配图 | 开 | 开、关 |
+| 插图风格 | 手绘编年史风 | 用户自定描述(如水墨、版画、赛博) |
+| 插图数量 | 封面加关键章节 | 仅封面、每章一张 |
+| 作者署名 | 保留 | 保留、匿名化 |
+| 输出格式 | Markdown | Markdown、Markdown 加 HTML |
+| 输出路径 | 仓库 docs/notes/ | 用户指定 |
+
+用户可以直接贴一段偏好,例如下面这样,没提到的项自动用默认。
+
+```
+语言 英文,重点 社区故事,插图 水墨风 仅封面
+```
+
+3. 克隆仓库到临时目录,命令是 `git clone --quiet <url> /tmp/<repo>-chronicle`;本地路径直接使用。
+4. 粗查规模,看 `git log --oneline | wc -l` 与首末提交日期。提交数超过 5000(用户可改阈值)时采用抽样策略(见 `references/data-sources.md`「大仓库策略」),并在文末方法论中标注口径。
 
 ### 阶段 1 数据采集(六类来源)
+
+按用户偏好的数据源范围裁剪。选"仅 git 提交"时跳过 2 到 6,省去检索时间。
 
 1. **git 提交**(最核心)。运行 `scripts/dump_git_history.sh <仓库路径> <输出目录>`,得到 `commits.tsv`、`per_year.tsv`、`per_author.tsv`、`commits_full.log`。检查合并提交,从提交消息中提取 PR 编号(`#N`),年份以合入日期为准。
 2. **release / tag**。运行 `scripts/fetch_github_meta.sh <owner/repo> <输出目录>`(依赖 gh);本地克隆用 `git tag -l --sort=creatordate --format='%(refname:short) %(creatordate:iso-strict)'` 兜底。
@@ -56,7 +82,7 @@ version: 0.1.0
 - §11 论坛回声。写与 git 主线并行的社区史,包含热度对照表与互文时刻。
 - 附录。写 PR 时间线(★ 标重大事件)、本地 fork 提交清单、论坛数据。
 - 配图。按 `references/diagrams.md` 的规范配 Mermaid 图,默认 timeline 和 flowchart。§0 画生命周期 timeline,架构转型章画迁移前后对比,里程碑章画架构快照,§11 画互文时刻流程。图里数字与正文一致。
-- 插图(可选)。用户提供了生图配置(ILLUSTRATION_BASE_URL、ILLUSTRATION_API_KEY、ILLUSTRATION_MODEL)时,按 `references/illustrations.md` 生成手绘风插图,统一放 `docs/notes/images/` 并嵌入对应章节。缺配置或生成失败就跳过,不阻塞交稿,在回复里说明原因。
+- 插图(可选)。用户提供了生图配置(ILLUSTRATION_BASE_URL、ILLUSTRATION_API_KEY、ILLUSTRATION_MODEL)时,按 `references/illustrations.md` 生成插图。风格用用户指定的描述,没指定就用默认的手绘编年史风,统一放 `docs/notes/images/` 并嵌入对应章节。缺配置或生成失败就跳过,不阻塞交稿,在回复里说明原因。
 - 文末。写数据方法论注记(口径、推断、覆盖率)。
 
 写作风格要求是双线并行不混写、微观提交与宏观判断结合、每条论断可溯源(提交哈希 / issue 编号 / URL)、未证实推断显式标注且绝不编造、戏剧化叙事可用但必须以事实为骨。
