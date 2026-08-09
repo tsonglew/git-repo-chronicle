@@ -1,8 +1,12 @@
+> 六类数据源的采集手册,git 提交、release/tag、issue/PR、论坛、RSS、新闻。每类给出可复制的命令与已知的坑,大仓库策略、身份比对方法、动机链素材的获取都在本文。
+
 # 数据源采集手册
 
 编年史的六类数据源是 git 提交、release/tag、issue/PR、论坛讨论、RSS、新闻与时代背景。按序采集,逐类归档到输出目录,保持文件命名一致,便于阶段 2/3 引用。
 
 ## 1. git 提交(最核心)
+
+> 先跑 scripts/dump_git_history.sh <仓库> <输出目录>,得 commits.tsv 与月度/作者统计
 
 ```bash
 # 导出结构化数据(推荐:使用 scripts/dump_git_history.sh)
@@ -21,6 +25,8 @@ git log --date=iso-strict --pretty=format:'commit %H%nAuthor: %an <%ae>%nDate:  
 
 ## 2. release / tag
 
+> 先跑 git tag -l --sort=creatordate,或 scripts/fetch_github_meta.sh(含 release 正文)
+
 ```bash
 # 本地克隆(始终可用)
 git tag -l --sort=creatordate --format='%(refname:short)%x09%(creatordate:iso-strict)%x09%(subject)'
@@ -29,6 +35,8 @@ gh release list --repo <owner/repo> --limit 200 --json tagName,publishedAt,name,
 ```
 
 ## 3. issue / PR
+
+> 先跑 scripts/fetch_github_meta.sh <owner/repo> <输出>,prs.json 含 body(动机链素材)、pr_issue_links.tsv(Closes 关联)
 
 ```bash
 gh issue list --repo <owner/repo> --state all --limit 500 \
@@ -47,6 +55,8 @@ gh issue view <n> --repo <owner/repo>   # 关键 issue 的正文与评论
 
 ## 4. 论坛讨论
 
+> 先搜 WebSearch「项目名 forum」,先看 README 与官网 footer 的官方论坛链接
+
 定位路径按下面的顺序试。
 
 1. 项目 README / 官网 footer 的论坛链接。
@@ -61,6 +71,8 @@ gh issue view <n> --repo <owner/repo>   # 关键 issue 的正文与评论
 
 ## 5. RSS
 
+> 先看 https://github.com/<owner>/<repo>/releases.atom,先拿 release 时间线
+
 GitHub 自带 feed,无需第三方。
 
 - release `https://github.com/<owner>/<repo>/releases.atom`
@@ -70,6 +82,8 @@ GitHub 自带 feed,无需第三方。
 项目博客、官方通告、维护者个人站的 RSS 优先于新闻聚合。RSS 的用途是拿到精确的发布时间线,与 git 提交日期互证。
 
 ## 6. 新闻与时代背景
+
+> 先搜 WebSearch「项目名 + 年份」,逐年限定关键词
 
 对每个活跃年份做两到三次检索,按下面的组合试。
 

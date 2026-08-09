@@ -113,11 +113,11 @@ version: 0.1.0
 
 ### Reference Files
 
-- **`references/chronicle-structure.md`** 编年史结构模板与写作风格,含题头、全景数字表、人物图鉴、按年章节骨架、提交行模板、论坛回声与附录规范。
-- **`references/data-sources.md`** 六类数据源的具体命令与 API,含 RSS 地址、gh 用法、速率限制、身份比对方法、大仓库策略与检索策略。
-- **`references/diagrams.md`** 配图规范,含图类型与位置、Mermaid 写法示例、独立图片导出与校验。
-- **`references/illustrations.md`** 插图规范,含风格前缀、配置方法、章节主题清单、失败降级与校验。
-- **`references/publishing.md`** 电子出版物规范,含 EPUB 与在线书转换命令、封面、Mermaid 预渲染与校验清单。
+- **`references/chronicle-structure.md`** 编年史结构模板与写作风格,从章节骨架到动机链,含题头、全景数字表、人物图鉴、按年章节、提交行模板、论坛回声与附录。
+- **`references/data-sources.md`** 六类数据源采集手册,命令、实战坑与大仓库策略,含 git 提交、release/issue/PR、论坛、RSS、新闻与身份比对。
+- **`references/diagrams.md`** 配图规范,Mermaid 图类型、写法示例、导出与校验。
+- **`references/illustrations.md`** 插图规范,风格前缀、模型探测、批量流水线与失败降级。
+- **`references/publishing.md`** 出版规范,EPUB 与在线书(框架主题优先)、封面、Mermaid 预渲染与校验清单。
 
 ### Scripts
 
