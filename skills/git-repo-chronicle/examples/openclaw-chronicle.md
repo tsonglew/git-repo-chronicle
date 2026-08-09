@@ -86,15 +86,23 @@ timeline
 
 ### 事件批次
 
-**批次 01,消息通道的可靠性**。第一批提交里,WhatsApp 会话自愈和看门狗占据了显眼位置。
+#### 批次 01,消息通道的可靠性
 
-`Add auto-recovery from stuck WhatsApp sessions`、`Increase watchdog timeout to 30 minutes` WhatsApp 会话卡死自动恢复,看门狗超时调到 30 分钟。一个把身家押在消息通道上的助手,第一件事就是保证通道不死。
+第一批提交里,WhatsApp 会话自愈和看门狗占据了显眼位置。
 
-`feat: same-phone mode with echo detection and configurable marker` 同手机模式与回声检测。AI 和人在同一个 WhatsApp 账号里对话,自己的回复会再次触发自己,回声检测解决这个自我循环,这是消息 agent 独有的技术问题。
 
-**批次 02,发布即高速迭代**。11 月 25 日当天,`chore: release 1.2.1`、`chore: release 1.2.2` 连着出现,版本号一天之内从 v0.1.0 滚到 v1.2.2。开源第一周就有 9 个 tag,没有"先打磨再发布"的过程,是边发布边打磨。
+- `Add auto-recovery from stuck WhatsApp sessions`、`Increase watchdog timeout to 30 minutes` WhatsApp 会话卡死自动恢复,看门狗超时调到 30 分钟。一个把身家押在消息通道上的助手,第一件事就是保证通道不死。
 
-**批次 03,野心写在文档里**。`docs: Add Twitter automation and music recognition examples` 推特自动化和音乐识别示例进了文档;`Rename claude-config.md to clawd.md, update credits` 配置文档开始建立自己的名字。这个月的改动路径集中在 extensions/telegram、src/plugins 与 src/agents,插件架构在第一天就存在。
+- `feat: same-phone mode with echo detection and configurable marker` 同手机模式与回声检测。AI 和人在同一个 WhatsApp 账号里对话,自己的回复会再次触发自己,回声检测解决这个自我循环,这是消息 agent 独有的技术问题。
+
+#### 批次 02,发布即高速迭代
+
+11 月 25 日当天,`chore: release 1.2.1`、`chore: release 1.2.2` 连着出现,版本号一天之内从 v0.1.0 滚到 v1.2.2。开源第一周就有 9 个 tag,没有"先打磨再发布"的过程,是边发布边打磨。
+
+
+#### 批次 03,野心写在文档里
+- `docs: Add Twitter automation and music recognition examples` 推特自动化和音乐识别示例进了文档;`Rename claude-config.md to clawd.md, update credits` 配置文档开始建立自己的名字。这个月的改动路径集中在 extensions/telegram、src/plugins 与 src/agents,插件架构在第一天就存在。
+
 
 ### 本章之变
 项目从"能跑的脚本"变成"有版本、有文档、有插件架构的开源项目"。作者只有 2 人,但 9 个 tag 和 288 条提交证明它已经开始运转,WhatsApp 场景的可靠性问题在诞生月就基本解决。
@@ -119,11 +127,18 @@ timeline
 
 ### 事件批次
 
-**批次 01,媒体处理**。`fix(media): sniff mime and keep extensions`、`docs: document mime-first media handling` 图片语音按 MIME 嗅探处理,不再把媒体当裸数据。聊天 agent 要收发图片和语音,媒体链路是产品化的第一块拼图。
+#### 批次 01,媒体处理
+- `fix(media): sniff mime and keep extensions`、`docs: document mime-first media handling` 图片语音按 MIME 嗅探处理,不再把媒体当裸数据。聊天 agent 要收发图片和语音,媒体链路是产品化的第一块拼图。
 
-**批次 02,仓库与品牌迁移**。`Merge branch 'main' of https://github.com/steipete/clawdis` 12 月的合并消息里还能看到前身仓库 steipete/clawdis 的地址,历史迁移的痕迹;`Rename claude-config.md to clawd.md` 系列提交把品牌从 Claude 谐音推向自己的名字。
 
-**批次 03,渠道与自动化扩展**。Twitter 自动化、音乐识别从"文档里的例子"变成真实功能,消息渠道开始超出 WhatsApp 单点。
+#### 批次 02,仓库与品牌迁移
+- `Merge branch 'main' of https://github.com/steipete/clawdis` 12 月的合并消息里还能看到前身仓库 steipete/clawdis 的地址,历史迁移的痕迹;`Rename claude-config.md to clawd.md` 系列提交把品牌从 Claude 谐音推向自己的名字。
+
+
+#### 批次 03,渠道与自动化扩展
+
+Twitter 自动化、音乐识别从"文档里的例子"变成真实功能,消息渠道开始超出 WhatsApp 单点。
+
 
 ### 本章之变
 项目从"单人项目"变成"小团队项目",11 位活跃作者里第一次出现了陌生名字。媒体链路、文档体系、版本节奏三件套就位,它开始像一个产品,而不再像一个脚本。社区从这章起成为变量。
@@ -148,11 +163,18 @@ timeline
 
 ### 事件批次
 
-**批次 01,工程护栏**。`Merge pull request #5723 from openclaw/ci/formal-conformance`、`#5807 ci/formal-conformance-alias-check` 形式一致性测试(conformance)进入 CI。1 月的 PR 编号从 #3677 打到 #5807,合入流水线在这个月定型,这是项目为 300 人社区准备的第一批护栏。
+#### 批次 01,工程护栏
+- `Merge pull request #5723 from openclaw/ci/formal-conformance`、`#5807 ci/formal-conformance-alias-check` 形式一致性测试(conformance)进入 CI。1 月的 PR 编号从 #3677 打到 #5807,合入流水线在这个月定型,这是项目为 300 人社区准备的第一批护栏。
 
-**批次 02,日期版本制**。`v2.0.0-beta1` 到 `beta5`(1 月 3 日)2.0 测试版在改名风暴前收尾;`v2026.1.8`(1 月 8 日)版本制切换,从此 tag 按日期走,v2026.1.11 当天连发四个补丁号。语义化版本在日更节奏下撑不住了,日期版本制是发布机器提速的必然结果。
 
-**批次 03,改名与骗局**。1 月 27 日 Anthropic 法务提出商标争议,认为 Clawd 与 Claude 发音过近。1 月 8 日起 Clawdbot 改名 Moltbot,1 月 29 日定名 OpenClaw。改名窗口里,冒充项目的假 $CLAWD 代币骗局冲到 1,600 万美元市值,社区在品牌真空期被收割了一轮。
+#### 批次 02,日期版本制
+- `v2.0.0-beta1` 到 `beta5`(1 月 3 日)2.0 测试版在改名风暴前收尾;`v2026.1.8`(1 月 8 日)版本制切换,从此 tag 按日期走,v2026.1.11 当天连发四个补丁号。语义化版本在日更节奏下撑不住了,日期版本制是发布机器提速的必然结果。
+
+
+#### 批次 03,改名与骗局
+
+1 月 27 日 Anthropic 法务提出商标争议,认为 Clawd 与 Claude 发音过近。1 月 8 日起 Clawdbot 改名 Moltbot,1 月 29 日定名 OpenClaw。改名窗口里,冒充项目的假 $CLAWD 代币骗局冲到 1,600 万美元市值,社区在品牌真空期被收割了一轮。
+
 
 ### 本章之变
 作者数一个月从 11 跳到 304,项目第一次需要 CI 护栏和每日发布机器;品牌从 Clawd 变成 OpenClaw,名字与 Anthropic 彻底切割,但也因此失去了"Claude 谐音"带来的流量红利。改名风暴的余波,直接决定了 2 月创始人面对的选择。
@@ -177,11 +199,18 @@ timeline
 
 ### 事件批次
 
-**批次 01,渠道矩阵**。`Merge remote-tracking branch 'prhead/feat/slack-text-streaming'` Slack 文本流式接入,渠道矩阵再扩一块。WhatsApp 起家的项目,这个月已经在铺企业协作的入口。
+#### 批次 01,渠道矩阵
+- `Merge remote-tracking branch 'prhead/feat/slack-text-streaming'` Slack 文本流式接入,渠道矩阵再扩一块。WhatsApp 起家的项目,这个月已经在铺企业协作的入口。
 
-**批次 02,社区合入加速**。`#5807` 之后 PR 编号继续滚,社区贡献者的名字开始密集出现在合并消息里。654 位活跃作者是九个月的峰值,合入流水线在满负荷运转。
 
-**批次 03,安全警报**。2 月 16 日前后,824 个恶意技能的统计公开。技能市场从第一天就有,但安全审查是后来才补的课,这个月只来得及发出警报,答案要等 4 月。
+#### 批次 02,社区合入加速
+- `#5807` 之后 PR 编号继续滚,社区贡献者的名字开始密集出现在合并消息里。654 位活跃作者是九个月的峰值,合入流水线在满负荷运转。
+
+
+#### 批次 03,安全警报
+
+2 月 16 日前后,824 个恶意技能的统计公开。技能市场从第一天就有,但安全审查是后来才补的课,这个月只来得及发出警报,答案要等 4 月。
+
 
 ### 本章之变
 创始人从独立开发者变成 OpenAI 的团队负责人,项目从个人项目变成基金会治理。作者数达到九个月峰值 654 人,但安全问题的种子也在本月种下。3 月的生态爆发,建立在 2 月这次治理转型之上。
@@ -206,11 +235,17 @@ v2026.3.22 一次发布 45 个新功能、13 个破坏性变更。ClawHub 原生
 
 ### 事件批次
 
-**批次 01,ClawHub 原生化**。`v2026.3.22`(3 月 23 日)45 个新功能,包括 48 小时默认 agent 超时、SSH 与 OpenShell 沙箱后端、一大批新 LLM 供应商,以及把 ClawHub 原生接进 `openclaw plugins install`。技能市场从"网站"变成"命令",生态入口收归官方。
+#### 批次 01,ClawHub 原生化
+- `v2026.3.22`(3 月 23 日)45 个新功能,包括 48 小时默认 agent 超时、SSH 与 OpenShell 沙箱后端、一大批新 LLM 供应商,以及把 ClawHub 原生接进 `openclaw plugins install`。技能市场从"网站"变成"命令",生态入口收归官方。
 
-**批次 02,旧品牌清场**。`移除 .moltbot 目录与 CLAWDBOT_/MOLTBOT_ 环境变量` 旧品牌痕迹一次性清掉,迁移交给 `openclaw doctor --fix`。改名风暴的尾巴在这个月扫完。
 
-**批次 03,分支策略收敛**。`Merge branch 'main' of https://github.com/openclaw/openclaw` 三月的合并消息几乎只剩主线对主线,分支策略收敛,合入路径变短。
+#### 批次 02,旧品牌清场
+- `移除 .moltbot 目录与 CLAWDBOT_/MOLTBOT_ 环境变量` 旧品牌痕迹一次性清掉,迁移交给 `openclaw doctor --fix`。改名风暴的尾巴在这个月扫完。
+
+
+#### 批次 03,分支策略收敛
+- `Merge branch 'main' of https://github.com/openclaw/openclaw` 三月的合并消息几乎只剩主线对主线,分支策略收敛,合入路径变短。
+
 
 ### 本章之变
 技能生态从社区自发变成官方治理,ClawHub 原生化让"装技能"成为 CLI 的一等公民。8,000 技能的野蛮生长没有停,但管道的入口已经被官方接管。下一章的安全加固,就是在接管后的管道上动刀。
@@ -235,11 +270,17 @@ v2026.4.12 的答案是三层锁。clawmanifest.json 用 SHA256 钉死文件路�
 
 ### 事件批次
 
-**批次 01,签名清单与 eBPF**。`v2026.4.12` 响应恶意技能,技能清单 clawmanifest.json 用 SHA256 钉死文件路径、网络端点与 shell 命令,内核级 eBPF 强制杀掉脚本外的进程。供应链安全从"提醒"变成"强制"。
+#### 批次 01,签名清单与 eBPF
+- `v2026.4.12` 响应恶意技能,技能清单 clawmanifest.json 用 SHA256 钉死文件路径、网络端点与 shell 命令,内核级 eBPF 强制杀掉脚本外的进程。供应链安全从"提醒"变成"强制"。
 
-**批次 02,版本节奏转型**。`v2026.4.9` 到 `v2026.5.16-beta.7`,4 月 9 日到 5 月 18 日的版本序列,beta 后缀开始出现,发布节奏从日更进入周更加预发布。62 个 tag 是九个月的次高,安全修复与功能迭代并行。
 
-**批次 03,基建与安全的洪流**。`Merge branch 'main'` 海量合并提交是这一月的底色,14,586 条提交是九个月第二高位,基建与安全修复在峰值流量下并行推进。
+#### 批次 02,版本节奏转型
+- `v2026.4.9` 到 `v2026.5.16-beta.7`,4 月 9 日到 5 月 18 日的版本序列,beta 后缀开始出现,发布节奏从日更进入周更加预发布。62 个 tag 是九个月的次高,安全修复与功能迭代并行。
+
+
+#### 批次 03,基建与安全的洪流
+- `Merge branch 'main'` 海量合并提交是这一月的底色,14,586 条提交是九个月第二高位,基建与安全修复在峰值流量下并行推进。
+
 
 ### 本章之变
 技能生态第一次有了强制安全边界,签名清单加 eBPF 的三层机制让"装技能"从信任社区变成信任签名。14,586 条的提交量说明安全加固没有拖慢开发,反而与功能开发并行冲到次高。5 月的巅峰,就在这个基础上到来。
@@ -264,11 +305,20 @@ v2026.4.12 的答案是三层锁。clawmanifest.json 用 SHA256 钉死文件路�
 
 ### 事件批次
 
-**批次 01,提交洪峰**。16,537 条主线提交、86 个 tag,双双创下九个月纪录。`#8xxxx` 段 PR 编号出现,社区 PR 池已经深到五位数。
+#### 批次 01,提交洪峰
 
-**批次 02,百代理开发模式公开**。同月报道,Steinberger 团队约 100 个并发 AI 编码代理、每月 130 万美元 API 消耗的细节公开,"龙虾之父烧钱"成了科技媒体的标题。AI 代理开发 AI 代理,OpenClaw 自己就是自己工作流的最佳案例。
+16,537 条主线提交、86 个 tag,双双创下九个月纪录。`#8xxxx` 段 PR 编号出现,社区 PR 池已经深到五位数。
 
-**批次 03,AI 社交网络**。Moltbook 上,纯 AI agent 组成的社交网络(moltys)已经跑起来,dancesWithClaws 的 "Logan" 每小时心跳发帖,扫描 feed、发 Cardano 内容、查 DM、更新记忆。
+
+#### 批次 02,百代理开发模式公开
+
+同月报道,Steinberger 团队约 100 个并发 AI 编码代理、每月 130 万美元 API 消耗的细节公开,"龙虾之父烧钱"成了科技媒体的标题。AI 代理开发 AI 代理,OpenClaw 自己就是自己工作流的最佳案例。
+
+
+#### 批次 03,AI 社交网络
+
+Moltbook 上,纯 AI agent 组成的社交网络(moltys)已经跑起来,dancesWithClaws 的 "Logan" 每小时心跳发帖,扫描 feed、发 Cardano 内容、查 DM、更新记忆。
+
 
 ### 本章之变
 九个月的峰值定格在 5 月,提交、版本、媒体报道三线全高。但这个月也是拐点的起点,作者数从 4 月的 644 回落到 564,6 月的提交量直接腰斩。巅峰之后,项目进入基建期。
@@ -293,11 +343,18 @@ v2026.4.12 的答案是三层锁。clawmanifest.json 用 SHA256 钉死文件路�
 
 ### 事件批次
 
-**批次 01,实时语音链路**。用户在 Talk 直连 OpenAI Realtime 时收到原始启动认证错误,错误里还带凭据相关的 provider 文本,这是 PR #87273 说明里写的问题,社区成员 BSG2000 的修复目标是让这类错误不再把敏感文本暴露给用户;`Merge pull request #87273 from BSG2000/fix/talk-openai-realtime-auth-diagnostic-pr` 合入后,OpenAI 实时语音的认证诊断落地;`Merge pull request #116684 from openclaw/fix/talk-relay-disconnect-cleanup` 通话中继断连清理;`merge: bound Discord realtime exact speech retention` 8 月,Discord 实时语音保留上限。通话从"能通"走向"稳定"。
+#### 批次 01,实时语音链路
 
-**批次 02,本地推理**。`merge: land llama.cpp lifecycle fix` 本地推理引擎生命周期修复。本地优先的路线还在,llama.cpp 的生命周期管理是"先能用、后修好"的又一例。
+用户在 Talk 直连 OpenAI Realtime 时收到原始启动认证错误,错误里还带凭据相关的 provider 文本,这是 PR #87273 说明里写的问题,社区成员 BSG2000 的修复目标是让这类错误不再把敏感文本暴露给用户;`Merge pull request #87273 from BSG2000/fix/talk-openai-realtime-auth-diagnostic-pr` 合入后,OpenAI 实时语音的认证诊断落地;`Merge pull request #116684 from openclaw/fix/talk-relay-disconnect-cleanup` 通话中继断连清理;`merge: bound Discord realtime exact speech retention` 8 月,Discord 实时语音保留上限。通话从"能通"走向"稳定"。
 
-**批次 03,启动并发与扩展**。`#120959`(8 月 8 日)fix(infra): 启动迁移 lease 并发修复,最新的主线提交;`merge: align Fish Audio extension directory` 扩展目录对齐。`v2026.6.34`(8 月 4 日)版本号滚到 6.34,九个月发布了 233 个 release。
+
+#### 批次 02,本地推理
+- `merge: land llama.cpp lifecycle fix` 本地推理引擎生命周期修复。本地优先的路线还在,llama.cpp 的生命周期管理是"先能用、后修好"的又一例。
+
+
+#### 批次 03,启动并发与扩展
+- `#120959`(8 月 8 日)fix(infra): 启动迁移 lease 并发修复,最新的主线提交;`merge: align Fish Audio extension directory` 扩展目录对齐。`v2026.6.34`(8 月 4 日)版本号滚到 6.34,九个月发布了 233 个 release。
+
 
 ### 本章之变
 项目从"扩张"转入"加固",实时语音、本地推理、启动并发逐项还债,版本号滚到 v2026.6.34。活跃作者从峰值 654 回落到 151,社区热度退潮,但提交仍在高位,核心团队与基金会撑住了节奏。九个月的故事在这里定格,而不是结束。
