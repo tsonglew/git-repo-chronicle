@@ -42,6 +42,8 @@ AI 会先克隆仓库,用脚本把提交和元数据导出,再检索 release、i
 
 想让成稿带手绘风插图,给 AI 生图服务的 base_url、api_key、model 三项配置(OpenAI 兼容接口即可),它会按编年史风格给封面和章节配图。没有配置会自动跳过,不影响出稿。
 
+想要电子书,偏好里加一句"输出 EPUB"。成稿会转成 EPUB 3 电子书,带封面、目录、章节跳转,微信读书和 Apple Books 都能打开。零依赖,不需要装 pandoc。
+
 ## 数据从哪来
 
 六类来源。
@@ -78,12 +80,19 @@ AI 会先克隆仓库,用脚本把提交和元数据导出,再检索 release、i
     ├── SKILL.md                      核心工作流(触发与四阶段流程)
     ├── references/
     │   ├── chronicle-structure.md    编年史结构模板与写作风格
-    │   └── data-sources.md           六类数据源采集手册
+    │   ├── data-sources.md           六类数据源采集手册
+    │   ├── diagrams.md               配图规范(Mermaid)
+    │   ├── illustrations.md          插图规范(手绘风)
+    │   └── publishing.md             电子出版物规范(EPUB)
     ├── scripts/
     │   ├── dump_git_history.sh       git 提交导出 + 年度/作者统计
-    │   └── fetch_github_meta.sh      release/issue/PR 元数据(gh)
+    │   ├── fetch_github_meta.sh      release/issue/PR 元数据(gh)
+    │   ├── generate_illustration.sh  生图 API 调用(手绘插图/封面)
+    │   └── md2epub.py                Markdown 转 EPUB 3 电子书(零依赖)
     └── examples/
-        └── chronicle-excerpt.md      编年史片段格式示例
+        ├── chronicle-excerpt.md      编年史片段格式示例
+        ├── zircon-chronicle.md       Zircon 真实编年史示例
+        └── openclaw-chronicle.md     OpenClaw 真实编年史示例
 ```
 
 ## 常见问题
