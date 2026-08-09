@@ -2,6 +2,13 @@
 
 读一个项目多年的提交记录,再把 release、issue、论坛讨论、RSS、新闻和当时的时代背景合进来,整理成一部《项目开发编年史》。按年分章,每条提交都能追到哈希,代码主线与社区回声两条线对照着写,结论先放在开头。
 
+## 示例
+
+### OpenClaw 项目开发编年史
+
+<img width="627" height="940" alt="image" src="https://github.com/user-attachments/assets/326f6f0f-e672-4ff5-bbe8-b1da8de83cef" />
+
+
 ## 安装
 
 六条路,任选一条。
