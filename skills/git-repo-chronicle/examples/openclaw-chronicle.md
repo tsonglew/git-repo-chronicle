@@ -211,7 +211,7 @@ Twitter 自动化、音乐识别从"文档里的例子"变成真实功能,消息
 
 
 #### 批次 02,社区合入加速
-- `#5807` 之后 PR 编号继续滚,社区贡献者的名字开始密集出现在合并消息里。654 位活跃作者是九个月的峰值,合入流水线在满负荷运转。
+- [`#5807`](https://github.com/openclaw/openclaw/pull/5807) 之后 PR 编号继续滚,社区贡献者的名字开始密集出现在合并消息里。654 位活跃作者是九个月的峰值,合入流水线在满负荷运转。
 
 
 #### 批次 03,安全警报
@@ -350,13 +350,13 @@ Moltbook 上,纯 AI agent 组成的社交网络(moltys)已经跑起来,dancesWit
 
 三个系统性问题集中暴露,通话链路不稳定(OpenAI 实时语音认证、中继断连、Discord 语音保留),本地推理没人管(llama.cpp 生命周期),启动并发互相打架(迁移 lease)。都是峰值流量下欠下的工程债。
 
-逐项还债。7 月,社区成员 BSG2000 直接修核心通道(PR #87273),通话中继断连清理(#116684);8 月,Discord 实时语音保留上限、llama.cpp 生命周期修复、启动迁移 lease 并发修复(#120959,最新的主线提交)。版本节奏没有停,v2026.6.34 滚到九个月第 233 个 release。
+逐项还债。7 月,社区成员 BSG2000 直接修核心通道([PR #87273](https://github.com/openclaw/openclaw/pull/87273)),通话中继断连清理([#116684](https://github.com/openclaw/openclaw/pull/116684));8 月,Discord 实时语音保留上限、llama.cpp 生命周期修复、启动迁移 lease 并发修复([#120959](https://github.com/openclaw/openclaw/pull/120959),最新的主线提交)。版本节奏没有停,v2026.6.34 滚到九个月第 233 个 release。
 
 ### 事件批次
 
 #### 批次 01,实时语音链路
 
-用户在 Talk 直连 OpenAI Realtime 时收到原始启动认证错误,错误里还带凭据相关的 provider 文本,这是 PR #87273 说明里写的问题,社区成员 BSG2000 的修复目标是让这类错误不再把敏感文本暴露给用户;`Merge pull request #87273 from BSG2000/fix/talk-openai-realtime-auth-diagnostic-pr` 合入后,OpenAI 实时语音的认证诊断落地;`Merge pull request #116684 from openclaw/fix/talk-relay-disconnect-cleanup` 通话中继断连清理;`merge: bound Discord realtime exact speech retention` 8 月,Discord 实时语音保留上限。通话从"能通"走向"稳定"。
+用户在 Talk 直连 OpenAI Realtime 时收到原始启动认证错误,错误里还带凭据相关的 provider 文本,这是 [PR #87273](https://github.com/openclaw/openclaw/pull/87273) 说明里写的问题,社区成员 BSG2000 的修复目标是让这类错误不再把敏感文本暴露给用户;`Merge pull request #87273 from BSG2000/fix/talk-openai-realtime-auth-diagnostic-pr` 合入后,OpenAI 实时语音的认证诊断落地;`Merge pull request #116684 from openclaw/fix/talk-relay-disconnect-cleanup` 通话中继断连清理;`merge: bound Discord realtime exact speech retention` 8 月,Discord 实时语音保留上限。通话从"能通"走向"稳定"。
 
 
 #### 批次 02,本地推理
@@ -364,14 +364,14 @@ Moltbook 上,纯 AI agent 组成的社交网络(moltys)已经跑起来,dancesWit
 
 
 #### 批次 03,启动并发与扩展
-- `#120959`(8 月 8 日)fix(infra): 启动迁移 lease 并发修复,最新的主线提交;`merge: align Fish Audio extension directory` 扩展目录对齐。`v2026.6.34`(8 月 4 日)版本号滚到 6.34,九个月发布了 233 个 release。
+- [`#120959`](https://github.com/openclaw/openclaw/pull/120959)(8 月 8 日)fix(infra): 启动迁移 lease 并发修复,最新的主线提交;`merge: align Fish Audio extension directory` 扩展目录对齐。`v2026.6.34`(8 月 4 日)版本号滚到 6.34,九个月发布了 233 个 release。
 
 
 ### 本章之变
 项目从"扩张"转入"加固",实时语音、本地推理、启动并发逐项还债,版本号滚到 v2026.6.34。活跃作者从峰值 654 回落到 151,社区热度退潮,但提交仍在高位,核心团队与基金会撑住了节奏。九个月的故事在这里定格,而不是结束。
 
 ### 本章关键词
-`基建期` `#120959` `实时语音` `llama.cpp`
+`基建期` [`#120959`](https://github.com/openclaw/openclaw/pull/120959) `实时语音` `llama.cpp`
 
 ## §10 尾声(经验总结)
 
