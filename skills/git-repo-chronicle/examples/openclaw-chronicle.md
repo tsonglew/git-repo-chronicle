@@ -313,3 +313,7 @@ flowchart LR
 - PR 编号。提交消息中的 #N 从 #3677 滚到 #120959,编号池跨越项目迁移,不能直接当 PR 总数用。
 - 社区数据。star 数、agent 数、技能数与月活来自公开报道与 ClawHub 页面,帖子级明细未逐帖抓取。
 - 插图由生图 API 生成,章节插图用 doubao-seedream-5-0-260128,1920x1920;封面用 wan2.7-image,1024x1365。风格统一为手绘编年史风。
+
+---
+
+本文由 [git-repo-chronicle](https://github.com/tsonglew/git-repo-chronicle) 生成

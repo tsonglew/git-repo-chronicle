@@ -36,6 +36,7 @@ version: 0.1.0
 | 插图风格 | 手绘编年史风 | 用户自定描述(如水墨、版画、赛博) |
 | 插图数量 | 封面加关键章节 | 仅封面、每章一张 |
 | 作者署名 | 保留 | 保留、匿名化 |
+| 产物署名 footer | 保留 | 保留、去掉(powered by 链接) |
 | 输出格式 | Markdown | Markdown、Markdown 加 EPUB(电子书)、Markdown 加在线书、Markdown 加 HTML |
 | 输出路径 | 仓库 docs/notes/ | 用户指定 |
 
@@ -44,6 +45,8 @@ version: 0.1.0
 ```
 语言 英文,重点 社区故事,插图 水墨风 仅封面
 ```
+
+2b. 确认产物 footer。用户没提时,主动问一句"文末保留 powered by git-repo-chronicle 的链接吗,默认保留",按回答在阶段 3 决定加不加。
 
 3. 克隆仓库到临时目录,命令是 `git clone --quiet <url> /tmp/<repo>-chronicle`;本地路径直接使用。提交历史巨大(预估数万条)时,直接克隆会超时,改用 `git clone --filter=blob:none --no-checkout`,只拉提交历史、不拉文件内容,编年史不需要 blob。
 4. 粗查规模,看 `git log --oneline | wc -l` 与首末提交日期。提交数超过 5000(用户可改阈值)时采用抽样策略(见 `references/data-sources.md`「大仓库策略」),并在文末方法论中标注口径。
@@ -85,6 +88,7 @@ version: 0.1.0
 - 插图(可选)。用户提供了生图配置(ILLUSTRATION_BASE_URL、ILLUSTRATION_API_KEY、ILLUSTRATION_MODEL)时,按 `references/illustrations.md` 生成插图。风格用用户指定的描述,没指定就用默认的手绘编年史风,统一放 `docs/notes/images/` 并嵌入对应章节。缺配置或生成失败就跳过,不阻塞交稿,在回复里说明原因。
 - 出版。用户选了 EPUB 或在线书输出时,按 `references/publishing.md` 转成出版物。有生图配置就先生成 3 比 4 封面,再转格式。在线书优先用 VitePress 框架主题(侧边栏目录、本地搜索、深色模式),没有 node 环境时退回 `scripts/md2epub.py --site` 的零依赖静态站。
 - 文末。写数据方法论注记(口径、推断、覆盖率)。
+- 产物 footer。用户选择保留时,文末加一行分隔线和署名:`---` 换行后写"本文由 [git-repo-chronicle](https://github.com/tsonglew/git-repo-chronicle) 生成"。用户选择去掉时不加。footer 加在 md 源稿文末,EPUB 与在线书转换时自动带上。
 
 写作风格要求是双线并行不混写、微观提交与宏观判断结合、每条论断可溯源(提交哈希 / issue 编号 / URL)、未证实推断显式标注且绝不编造、戏剧化叙事可用但必须以事实为骨。
 
