@@ -79,12 +79,12 @@ def shutil_which(name):
     return None
 
 def inline(text):
-    """处理行内格式:**粗体**、`代码`、[链接](url)、![图](url)。"""
+    """处理行内格式:**粗体**、`代码`、[链接](url)、![图](url)。图片替换必须先于链接,否则 ![图](url) 会被链接正则吞成 !<a>。"""
     text = html.escape(text, quote=False)
     text = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", text)
     text = re.sub(r"`([^`]+)`", r"<code>\1</code>", text)
-    text = re.sub(r"\[([^\]]+)\]\(([^)\s]+)\)", r'<a href="\2">\1</a>', text)
     text = re.sub(r"!\[([^\]]*)\]\(([^)\s]+)\)", r'<img alt="\1" src="\2"/>', text)
+    text = re.sub(r"\[([^\]]+)\]\(([^)\s]+)\)", r'<a href="\2">\1</a>', text)
     return text
 
 def parse_blocks(lines, md_dir, image_dir, mermaid_mode="render"):
