@@ -293,7 +293,7 @@ v2026.4.12 的答案是三层锁。clawmanifest.json 用 SHA256 钉死文件路�
 
 ### 事件批次
 
-**批次 01,实时语音链路**。`Merge pull request #87273 from BSG2000/fix/talk-openai-realtime-auth-diagnostic-pr` 7 月,OpenAI 实时语音的认证诊断,社区成员直接修核心通道;`Merge pull request #116684 from openclaw/fix/talk-relay-disconnect-cleanup` 通话中继断连清理;`merge: bound Discord realtime exact speech retention` 8 月,Discord 实时语音保留上限。通话从"能通"走向"稳定"。
+**批次 01,实时语音链路**。用户在 Talk 直连 OpenAI Realtime 时收到原始启动认证错误,错误里还带凭据相关的 provider 文本,这是 PR #87273 说明里写的问题,社区成员 BSG2000 的修复目标是让这类错误不再把敏感文本暴露给用户;`Merge pull request #87273 from BSG2000/fix/talk-openai-realtime-auth-diagnostic-pr` 合入后,OpenAI 实时语音的认证诊断落地;`Merge pull request #116684 from openclaw/fix/talk-relay-disconnect-cleanup` 通话中继断连清理;`merge: bound Discord realtime exact speech retention` 8 月,Discord 实时语音保留上限。通话从"能通"走向"稳定"。
 
 **批次 02,本地推理**。`merge: land llama.cpp lifecycle fix` 本地推理引擎生命周期修复。本地优先的路线还在,llama.cpp 的生命周期管理是"先能用、后修好"的又一例。
 
