@@ -7,19 +7,30 @@
 | 格式 | 定位 | 工具 |
 |---|---|---|
 | EPUB 3 | 默认出版物,微信读书、Apple Books、Kindle(经 Calibre 转换)可读 | scripts/md2epub.py,纯 Python 标准库,零依赖 |
-| HTML 单文件 | 备用,浏览器直接打开,可打印存 PDF | 同脚本的变体或直接浏览器打印 |
+| 在线书(HTML 站点) | 网页版,目录页加分章页,扔静态托管即上线 | 同脚本的 --site 模式 |
 | PDF | 可选,需要 pandoc 加 xelatex,不默认 | pandoc --pdf-engine=xelatex |
 
 ## 转换命令
 
 ```bash
-python3 scripts/md2epub.py <编年史.md> <输出.epub> [--cover 封面.png] [--author 作者名]
+python3 scripts/md2epub.py <编年史.md> <输出.epub> [--site 在线书目录] [--cover 封面.png] [--author 作者名]
 ```
 
+- 加 `--site` 时,同一份源稿额外生成在线书目录,含index.html 目录页、chapters/ 分章页、styles.css、images/。
 - 标题自动取文档第一个 `#` 标题。
 - 作者用 `--author` 指定,没指定用 git 用户。
 - 语言固定 zh,日期取文档里的"整理日期",没有则用当天。
 - 目录按二级标题自动生成,阅读器可跳转。
+
+## 在线书
+
+在线书跑在浏览器里,可以执行 JavaScript,所以 Mermaid 图由 mermaid.js 在浏览器实时渲染(章节页引用 jsdelivr CDN),不需要预渲染,这是它与 EPUB 最大的区别。EPUB 的 Mermaid 才需要 mmdc 或 kroki 预渲染。
+
+部署方式任选。
+
+- 本地阅读,双击 index.html。
+- 上线,把 site/ 目录推到 GitHub Pages、Vercel 或任意静态托管,配一个域名或子路径。
+- 章节页引用了 CDN,离线打开时 Mermaid 不渲染但源码块可见;要完全离线,把 mermaid.min.js 下载到 site/ 下改成本地引用。
 
 ## 封面
 

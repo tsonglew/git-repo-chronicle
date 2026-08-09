@@ -36,7 +36,7 @@ version: 0.1.0
 | 插图风格 | 手绘编年史风 | 用户自定描述(如水墨、版画、赛博) |
 | 插图数量 | 封面加关键章节 | 仅封面、每章一张 |
 | 作者署名 | 保留 | 保留、匿名化 |
-| 输出格式 | Markdown | Markdown、Markdown 加 EPUB(电子书)、Markdown 加 HTML |
+| 输出格式 | Markdown | Markdown、Markdown 加 EPUB(电子书)、Markdown 加在线书、Markdown 加 HTML |
 | 输出路径 | 仓库 docs/notes/ | 用户指定 |
 
 用户可以直接贴一段偏好,例如下面这样,没提到的项自动用默认。
@@ -83,7 +83,7 @@ version: 0.1.0
 - 附录。写 PR 时间线(★ 标重大事件)、本地 fork 提交清单、论坛数据。
 - 配图。按 `references/diagrams.md` 的规范配 Mermaid 图,默认 timeline 和 flowchart。§0 画生命周期 timeline,架构转型章画迁移前后对比,里程碑章画架构快照,§11 画互文时刻流程。图里数字与正文一致。
 - 插图(可选)。用户提供了生图配置(ILLUSTRATION_BASE_URL、ILLUSTRATION_API_KEY、ILLUSTRATION_MODEL)时,按 `references/illustrations.md` 生成插图。风格用用户指定的描述,没指定就用默认的手绘编年史风,统一放 `docs/notes/images/` 并嵌入对应章节。缺配置或生成失败就跳过,不阻塞交稿,在回复里说明原因。
-- 出版。用户选了 EPUB 输出时,按 `references/publishing.md` 转成电子书。有生图配置就先生成 3 比 4 封面,再运行 `scripts/md2epub.py <编年史.md> <输出.epub> --author <作者>`,最后按规范校验。
+- 出版。用户选了 EPUB 或在线书输出时,按 `references/publishing.md` 转成出版物。有生图配置就先生成 3 比 4 封面,再运行 `scripts/md2epub.py <编年史.md> <输出.epub> --site <站点目录> --author <作者>`,最后按规范校验。在线书站点可以直接部署到静态托管。
 - 文末。写数据方法论注记(口径、推断、覆盖率)。
 
 写作风格要求是双线并行不混写、微观提交与宏观判断结合、每条论断可溯源(提交哈希 / issue 编号 / URL)、未证实推断显式标注且绝不编造、戏剧化叙事可用但必须以事实为骨。
@@ -112,14 +112,14 @@ version: 0.1.0
 - **`references/data-sources.md`** 六类数据源的具体命令与 API,含 RSS 地址、gh 用法、速率限制、身份比对方法、大仓库策略与检索策略。
 - **`references/diagrams.md`** 配图规范,含图类型与位置、Mermaid 写法示例、独立图片导出与校验。
 - **`references/illustrations.md`** 插图规范,含风格前缀、配置方法、章节主题清单、失败降级与校验。
-- **`references/publishing.md`** 电子出版物规范,含 EPUB 转换命令、封面、Mermaid 预渲染与校验清单。
+- **`references/publishing.md`** 电子出版物规范,含 EPUB 与在线书转换命令、封面、Mermaid 预渲染与校验清单。
 
 ### Scripts
 
 - **`scripts/dump_git_history.sh`** 导出 git 提交为 TSV,并生成年度与作者统计。
 - **`scripts/fetch_github_meta.sh`** 用 gh 拉取 release、issue、PR 元数据,无 gh 时给出 API 兜底提示。
 - **`scripts/generate_illustration.sh`** 调用生图 API 生成手绘风插图,支持 url 与 b64_json 两种响应。
-- **`scripts/md2epub.py`** 把编年史 Markdown 转成 EPUB 3 电子书,纯 Python 标准库,零依赖,支持封面、目录与 Mermaid 预渲染。
+- **`scripts/md2epub.py`** 把编年史 Markdown 转成 EPUB 3 电子书与在线书站点,纯 Python 标准库,零依赖,支持封面、目录与 Mermaid(EPUB 预渲染,在线书浏览器端渲染)。
 
 ### Examples
 

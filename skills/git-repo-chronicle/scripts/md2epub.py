@@ -3,13 +3,15 @@
 md2epub.py — 把编年史 Markdown 转成 EPUB 3 电子书(纯标准库,零依赖)
 
 用法:
-  python3 md2epub.py <编年史.md> <输出.epub> [--cover 封面.png] [--author 作者]
+  python3 md2epub.py <编年史.md> <输出.epub> [--site 在线书目录] [--cover 封面.png] [--author 作者]
 
 行为:
   - 标题取自文档第一个 # 标题,语言默认 zh,日期默认今天
   - 图片按 Markdown 相对路径解析,复制进电子书
   - Mermaid 代码块按顺序尝试渲染:本机 mmdc → kroki 在线服务 → 降级为代码块
   - 自动生成目录(nav)与封面页(有封面图时)
+  - 加 --site 时额外输出在线书站点:目录页加分章页,浏览器端用
+    mermaid.js 渲染图,整个目录扔到任意静态托管即上线
 """
 import base64
 import datetime
@@ -85,8 +87,12 @@ def inline(text):
     text = re.sub(r"!\[([^\]]*)\]\(([^)\s]+)\)", r'<img alt="\1" src="\2"/>', text)
     return text
 
-def parse_blocks(lines, md_dir, image_dir):
-    """Markdown 子集解析:标题、段落、列表、表格、代码块、引用、图片、Mermaid。"""
+def parse_blocks(lines, md_dir, image_dir, mermaid_mode="render"):
+    """Markdown 子集解析:标题、段落、列表、表格、代码块、引用、图片、Mermaid。
+
+    mermaid_mode 为 "render" 时尝试渲染成 PNG(EPUB 用),为 "keep" 时
+    保留源码块并标记 class="mermaid",交给浏览器端 mermaid.js 渲染(在线书用)。
+    """
     body = []
     mermaid_count = 0
     i = 0
@@ -105,12 +111,15 @@ def parse_blocks(lines, md_dir, image_dir):
             code_text = "\n".join(code)
             if lang == "mermaid":
                 mermaid_count += 1
-                img = render_mermaid(code_text, mermaid_count, image_dir)
-                if img:
-                    body.append(f'<figure><img src="{img}" alt="mermaid 图"/></figure>')
+                if mermaid_mode == "keep":
+                    body.append(f'<pre class="mermaid">{html.escape(code_text)}</pre>')
                 else:
-                    body.append("<pre>Mermaid 图(阅读器不支持渲染,见源稿):</pre>")
-                    body.append(f"<pre>{html.escape(code_text)}</pre>")
+                    img = render_mermaid(code_text, mermaid_count, image_dir)
+                    if img:
+                        body.append(f'<figure><img src="{img}" alt="mermaid 图"/></figure>')
+                    else:
+                        body.append("<pre>Mermaid 图(阅读器不支持渲染,见源稿):</pre>")
+                        body.append(f"<pre>{html.escape(code_text)}</pre>")
             else:
                 body.append(f"<pre>{html.escape(code_text)}</pre>")
             continue
@@ -328,6 +337,126 @@ figure { margin: 1.5em 0; text-align: center; }
     log(f"完成: {out_path}  ({book_title} / {author} / {book_date})")
     return out_path
 
+SITE_CSS = """body { font-family: "Songti SC", "Noto Serif CJK SC", serif; line-height: 1.8; color: #2b2b2b; background: #faf8f4; margin: 0; }
+.book-home { max-width: 720px; margin: 0 auto; padding: 48px 24px; text-align: center; }
+.book-cover { max-width: 320px; box-shadow: 0 4px 16px rgba(0,0,0,.15); margin-bottom: 24px; }
+.book-toc { list-style: none; padding: 0; text-align: left; }
+.book-toc li { margin: 10px 0; }
+.book-toc a { text-decoration: none; color: #2b2b2b; }
+.book-toc a:hover { color: #8a5a2b; }
+.book-nav { max-width: 720px; margin: 0 auto; padding: 12px 24px; font-size: .9em; color: #666; }
+.book-nav a { color: #666; text-decoration: none; margin: 0 4px; }
+.chapter { max-width: 720px; margin: 0 auto; padding: 24px; }
+.chapter h1 { text-align: center; }
+.chapter h2 { margin-top: 2em; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #999; padding: 6px 10px; font-size: .92em; }
+pre { background: #f1ede4; padding: 10px; overflow-x: auto; font-size: .88em; }
+blockquote { color: #555; border-left: 3px solid #bbb; padding-left: 12px; margin: 1em 0; }
+img { max-width: 100%; }
+figure { margin: 1.5em 0; text-align: center; }
+"""
+
+def make_site(md_path, site_dir, cover_path, author):
+    """生成可部署的在线书站点:目录页 + 分章页,浏览器端渲染 Mermaid。"""
+    md_dir = os.path.dirname(os.path.abspath(md_path))
+    with open(md_path, encoding="utf-8") as f:
+        md_text = f.read()
+    book_title, book_date = extract_meta(md_text, author)
+
+    chapters_dir = os.path.join(site_dir, "chapters")
+    images_dir = os.path.join(site_dir, "images")
+    os.makedirs(chapters_dir, exist_ok=True)
+    os.makedirs(images_dir, exist_ok=True)
+
+    img_map = {}
+    for m in re.finditer(r"!\[[^\]]*\]\(([^)\s]+)\)", md_text):
+        src = os.path.join(md_dir, m.group(1))
+        if os.path.exists(src):
+            name = os.path.basename(m.group(1))
+            dst = os.path.join(images_dir, name)
+            if not os.path.exists(dst):
+                with open(src, "rb") as f, open(dst, "wb") as g:
+                    g.write(f.read())
+            img_map[m.group(1)] = f"../images/{name}"
+
+    body = parse_blocks(md_text.splitlines(), md_dir, site_dir, mermaid_mode="keep")
+    for old, new in img_map.items():
+        body = body.replace(f'src="{old}"', f'src="{new}"')
+
+    chunks = [c for c in re.split(r"(?=<h2>)", body) if c.strip()]
+    chapters = []
+    for chunk in chunks:
+        m = re.search(r"<h2>(.+?)</h2>", chunk)
+        chapters.append((m.group(1) if m else "开篇", chunk))
+
+    cover_html = ""
+    if cover_path and os.path.exists(cover_path):
+        name = "cover.png"
+        with open(cover_path, "rb") as f, open(os.path.join(images_dir, name), "wb") as g:
+            g.write(f.read())
+        cover_html = '<img class="book-cover" src="images/cover.png" alt="封面"/>'
+
+    total = len(chapters)
+    nav_links = []
+    for idx, (title, chunk) in enumerate(chapters):
+        fname = f"ch-{idx + 1:02d}.html"
+        nav = '<a href="../index.html">目录</a>'
+        if idx > 0:
+            nav += f' · <a href="ch-{idx:02d}.html">上一章</a>'
+        if idx < total - 1:
+            nav += f' · <a href="ch-{idx + 2:02d}.html">下一章</a>'
+        with open(os.path.join(chapters_dir, fname), "w", encoding="utf-8") as f:
+            f.write(f"""<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>{html.escape(title)} - {html.escape(book_title)}</title>
+<link rel="stylesheet" href="../styles.css"/>
+</head>
+<body>
+<nav class="book-nav">{nav}</nav>
+<main class="chapter">
+{chunk}
+</main>
+<footer class="book-nav">{nav}</footer>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({{startOnLoad:true, theme:'neutral'}});</script>
+</body>
+</html>
+""")
+        nav_links.append((title, fname))
+
+    toc = "\n".join(
+        f'<li><a href="chapters/{fname}">{html.escape(title)}</a></li>'
+        for title, fname in nav_links)
+    with open(os.path.join(site_dir, "index.html"), "w", encoding="utf-8") as f:
+        f.write(f"""<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>{html.escape(book_title)}</title>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<main class="book-home">
+{cover_html}
+<h1>{html.escape(book_title)}</h1>
+<p class="book-meta">{html.escape(author or "未知")} · {book_date}</p>
+<ol class="book-toc">{toc}</ol>
+</main>
+</body>
+</html>
+""")
+
+    with open(os.path.join(site_dir, "styles.css"), "w", encoding="utf-8") as f:
+        f.write(SITE_CSS)
+
+    log(f"完成: {site_dir}  ({total} 章,在线书)")
+    return site_dir
+
 def uuid4():
     import uuid
     return uuid.uuid4()
@@ -340,14 +469,19 @@ def main():
     out_path = sys.argv[2]
     cover = None
     author = None
+    site = None
     if "--cover" in sys.argv:
         cover = sys.argv[sys.argv.index("--cover") + 1]
     if "--author" in sys.argv:
         author = sys.argv[sys.argv.index("--author") + 1]
+    if "--site" in sys.argv:
+        site = sys.argv[sys.argv.index("--site") + 1]
     if not os.path.exists(md_path):
         print(f"错误: 找不到 {md_path}", file=sys.stderr)
         sys.exit(1)
     make_epub(md_path, out_path, cover, author)
+    if site:
+        make_site(md_path, site, cover, author)
 
 if __name__ == "__main__":
     main()
