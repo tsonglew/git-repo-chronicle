@@ -6,7 +6,7 @@
 
 ### OpenClaw 项目开发编年史
 
-<img width="627" height="940" alt="image" src="https://github.com/user-attachments/assets/326f6f0f-e672-4ff5-bbe8-b1da8de83cef" />
+<img width="1425" height="826" alt="image" src="https://github.com/user-attachments/assets/45595ebf-2a23-4a0a-84bc-648c1b50b5e6" />
 
 
 ## 安装
