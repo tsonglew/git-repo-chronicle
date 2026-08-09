@@ -39,6 +39,9 @@ gh issue view <n> --repo <owner/repo>   # 关键 issue 的正文与评论
 ```
 
 - 无 gh 时改用 API 拉取,`curl -s "https://api.github.com/repos/<owner>/<repo>/issues?state=all&per_page=100&page=N"`,分页直到返回空数组。速率限制是未认证 60 次/小时,`gh auth` 或 `GITHUB_TOKEN` 后 5000 次/小时。
+- 实战坑一,release 字段差异。部分实例的 release 没有 body 字段,`--json body` 会报 Unknown JSON field,去掉该字段即可。fetch_github_meta.sh 已按此处理。
+- 实战坑二,issue 被禁用。仓库在设置里关掉 issues 后,gh 报 "disabled issues",issues.json 为空,属正常,不是抓取失败。
+- 实战坑三,PR 不在本仓库。fork 仓库可能查不到上游 PR(gh pr list 为空)。此时从提交消息提取 `#N` 编号重建 PR 时间线:`grep -oE '#[0-9]{2,4}' commits.tsv | sort -u`,按首次出现的年份归入附录 A,编号池跨仓库迁移时在方法论中注明。
 - 多语言 issue(韩语、西语、中文等)本身就是社区全球化的证据,翻译后引用,并在原文旁标注语言。
 - 历史 issue 的讨论串是"社区呼声"的直接证据,标注 `#编号` 供附录速查。
 
@@ -89,8 +92,10 @@ GitHub 自带 feed,无需第三方。
 
 ## 大仓库策略(超过 5000 条提交)
 
+- 克隆阶段就用 blob 过滤,避免克隆超时。`git clone --filter=blob:none --no-checkout <url>` 只拉提交历史与目录树,文件内容按需下载,编年史写作不需要 blob。
 - 主线优先。`git log --first-parent` 砍掉分支噪音。
 - 窗口精读。以 release/tag 为中心,精读每个里程碑前后约 30 天的提交;窗口之间用月度聚合(`git log --date=format:'%Y-%m'` 统计)一笔带过。
+- 月度代表性提交。按月取前几条 merge 提交做窗口素材,命令是 `git log --first-parent --merges --date=format:'%Y-%m' --pretty=format:'%ad %s' | grep '^2026-05'`,只挑与当月主题相关的展开,其余当背景。
 - 明确口径。方法论注记中写明"仅精读 N 个里程碑窗口,其余按月聚合"。
 - release 列表(gh 或 tags)在超大仓库里比提交列表更能代表"官方叙事",让 release 成为章节骨架。
 

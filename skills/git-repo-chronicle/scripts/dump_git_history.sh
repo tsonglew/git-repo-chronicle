@@ -8,6 +8,8 @@
 #   commits.tsv       哈希 | 作者 | 邮箱 | ISO日期 | 标题(每条一行)
 #   commits_full.log  完整日志(含正文),供精读
 #   per_year.tsv      年份 | 提交数 | 去重作者数
+#   per_month.tsv     月份 | 提交数 | 去重作者数(数据速览用)
+#   tags.tsv          tag名 | 日期(版本节奏用)
 #   per_author.tsv    提交数 | 作者 | 邮箱(降序)
 #   meta.txt          总提交数、首末提交、分支、tag 数
 #
@@ -36,6 +38,16 @@ git log "${LOG_ARGS[@]}" --pretty=format:'%ad%x09%ae' \
   | awk -F'\t' '{year=substr($1,1,4); n[year]++; if (!seen[year FS $2]++) au[year]++} END{for (y in n) print y "\t" n[y] "\t" au[y]}' \
   | sort > "$OUT/per_year.tsv"
 
+# 3b. 月度统计: 月份 | 提交数 | 去重作者数(数据速览用)
+git log "${LOG_ARGS[@]}" --pretty=format:'%ad%x09%ae' \
+  | awk -F'\t' '{month=substr($1,1,7); n[month]++; if (!seen[month FS $2]++) au[month]++} END{for (m in n) print m "\t" n[m] "\t" au[m]}' \
+  | sort > "$OUT/per_month.tsv"
+
+# 3c. tag 列表: tag名 | 日期(版本节奏用)
+# 注意 git tag 的 --format 不支持 %x09 转义,用 printf 嵌入真实 tab
+TAG_FMT=$(printf '%%(refname:short)\t%%(creatordate:short)')
+git tag -l --sort=creatordate --format="$TAG_FMT" > "$OUT/tags.tsv" 2>/dev/null || true
+
 # 4. 作者统计: 提交数 | 作者 | 邮箱
 git log "${LOG_ARGS[@]}" --pretty=format:'%an%x09%ae' \
   | sort | uniq -c | sort -rn \
@@ -53,4 +65,6 @@ git log "${LOG_ARGS[@]}" --pretty=format:'%an%x09%ae' \
 echo "完成。输出目录: $OUT"
 echo "  commits.tsv    $(wc -l < "$OUT/commits.tsv" | tr -d ' ') 条提交"
 echo "  per_year.tsv   $(wc -l < "$OUT/per_year.tsv" | tr -d ' ') 个年份"
+echo "  per_month.tsv  $(wc -l < "$OUT/per_month.tsv" | tr -d ' ') 个月份"
+echo "  tags.tsv       $(wc -l < "$OUT/tags.tsv" | tr -d ' ') 个 tag"
 echo "  per_author.tsv $(wc -l < "$OUT/per_author.tsv" | tr -d ' ') 位作者"

@@ -45,7 +45,7 @@ version: 0.1.0
 语言 英文,重点 社区故事,插图 水墨风 仅封面
 ```
 
-3. 克隆仓库到临时目录,命令是 `git clone --quiet <url> /tmp/<repo>-chronicle`;本地路径直接使用。
+3. 克隆仓库到临时目录,命令是 `git clone --quiet <url> /tmp/<repo>-chronicle`;本地路径直接使用。提交历史巨大(预估数万条)时,直接克隆会超时,改用 `git clone --filter=blob:none --no-checkout`,只拉提交历史、不拉文件内容,编年史不需要 blob。
 4. 粗查规模,看 `git log --oneline | wc -l` 与首末提交日期。提交数超过 5000(用户可改阈值)时采用抽样策略(见 `references/data-sources.md`「大仓库策略」),并在文末方法论中标注口径。
 
 ### 阶段 1 数据采集(六类来源)
@@ -97,6 +97,7 @@ version: 0.1.0
 5. 配图核对。每张图与正文数据一致,每条连线在正文里有对应陈述,Mermaid 语法能在 GitHub 渲染。
 6. 插图检查。插了图的,确认图片文件存在、Markdown 引用路径正确、全篇风格一致(手绘编年史风)。
 7. 出版校验。出了 EPUB 的,按 `references/publishing.md` 的校验清单过一遍,结构、元数据、目录、图片都要对。
+8. 发布审计。成品要推送到公开仓库时,推送前扫一遍,查真实的 API key(`sk-` 开头长串)、内网域名与 IP、本地绝对路径、临时文件(.tgz/.log/.env/mock),git 历史也要查(`git log --all -p | grep` 关键词)。命中就清理后再推,不要带病上线。
 
 ## 大仓库与无权限场景
 

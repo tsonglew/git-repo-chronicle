@@ -38,6 +38,32 @@ npx vercel deploy --prod --yes --name <项目名>
 - 侧边栏在 config.mts 里按章节顺序手工列出,保证章节顺序可控。
 - Mermaid 用 vitepress-plugin-mermaid,浏览器端渲染,无需预渲染。
 - 部署用 Vercel 框架构建(vercel.json 指定 buildCommand 与 outputDirectory),不是静态直传。
+- 版本号要查 registry,不要照抄旧文档。`npm view vitepress-plugin-mermaid versions` 看实际版本,写错版本号 npm install 会 ETARGET。
+
+```bash
+# 拆章脚本思路(把 md 按 "## " 拆成文件,题头并进 index.md)
+python3 - <<'EOF'
+import re
+text = open('编年史.md', encoding='utf-8').read()
+chunks = re.split(r'\n(?=## )', text)
+for i, ch in enumerate(chunks[1:], 1):
+    title = ch.strip().splitlines()[0].lstrip('#').strip()
+    body = re.sub(r'!\[([^\]]*)\]\(images/([^)]+)\)', r'![\1](/images/\2)', ch.strip())
+    open(f'docs/chapters/ch{i:02d}.md', 'w', encoding='utf-8').write(f'# {title}\n\n' + '\n'.join(body.splitlines()[1:]).strip() + '\n')
+EOF
+```
+
+## Vercel 部署
+
+```bash
+# 首次:CLI 登录(设备码授权,与 MCP 授权独立)
+npx vercel login          # 打开返回的 https://vercel.com/oauth/device?user_code=XXXX-XXXX
+# 部署:--name 指定项目名;目录里已有 .vercel 链接时 --name 会被忽略,
+# 先 rm -rf .vercel 再部署,避免误建新项目
+npx vercel deploy --prod --yes --name <项目名>
+```
+
+部署后验证:本地网络可能访问不了 vercel.app,用 MCP 的 web_fetch_vercel_url 或服务端抓取确认首页、章节页、图片均 200。发布前图片过大时,先压缩再传:`sips -Z 1024 -s format jpeg -s formatOptions 70`(站点显示宽度 720px,1024 足够;封面保持 png 扩展名与 HTML 引用一致,避免 404)。
 
 ## 在线书(零依赖备选)
 
@@ -75,7 +101,9 @@ EPUB 阅读器不执行 JavaScript,Mermaid 代码块必须预渲染成图片。�
 2. `unzip -p 输出.epub OEBPS/content.opf` 看元数据,标题、作者、语言、日期正确。
 3. 目录章节与源稿二级标题一致。
 4. 有图片的,确认 `OEBPS/images/` 里有对应文件,正文引用路径正确。
-5. 有条件的用 epubcheck 校验,或用阅读器实际打开翻一遍。
+5. 转换正确性抽查。标题提取对不对(不是取成文末标题,这是循环变量遮蔽的典型症状);正文里带图片的章节,确认图被解析成 `<img>` 或 `<figure>`,而不是 `<a>` 链接加一个感叹号(图片与链接的正则替换顺序错了会这样)。
+6. 有条件的用 epubcheck 校验,或用阅读器实际打开翻一遍。
+7. 在线书(VitePress)构建后检查 dist 里侧边栏章节齐全、图片 200、mermaid 脚本加载。
 
 ## 注意事项
 

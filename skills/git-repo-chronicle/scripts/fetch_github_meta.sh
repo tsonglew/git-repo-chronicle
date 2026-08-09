@@ -5,11 +5,15 @@
 # 用法:  fetch_github_meta.sh <owner/repo> <输出目录>
 #
 # 输出文件:
-#   releases.json  tagName, publishedAt, name, body
+#   releases.json  tagName, publishedAt, name(注意:部分实例的 release 没有 body 字段,
+#                  带 body 会报 Unknown JSON field,故不请求)
 #   issues.json    number, title, createdAt, closedAt, state, labels
 #   prs.json       number, title, mergedAt, createdAt, state, labels
 #
 # 依赖:  gh CLI(https://cli.github.com)。未安装时打印 API 兜底提示,不中断流程。
+# 已知坑: 仓库可能禁用 issue(报 disabled issues,issues.json 为空)、
+#          可能没有 PR(prs.json 为空)。此时用提交消息里的 #N 编号重建 PR 时间线,
+#          见 data-sources.md。
 set -euo pipefail
 
 REPO="${1:?用法: fetch_github_meta.sh <owner/repo> <输出目录>}"
@@ -20,7 +24,7 @@ if command -v gh >/dev/null 2>&1; then
   echo "使用 gh 抓取 $REPO ..."
 
   gh release list --repo "$REPO" --limit 200 \
-      --json tagName,publishedAt,name,body > "$OUT/releases.json" || \
+      --json tagName,publishedAt,name > "$OUT/releases.json" || \
       { echo "警告: release 抓取失败(仓库可能无 release)" >&2; : > "$OUT/releases.json"; }
 
   gh issue list --repo "$REPO" --state all --limit 500 \

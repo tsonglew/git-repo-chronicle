@@ -24,7 +24,22 @@ export ILLUSTRATION_API_KEY="sk-xxxx"
 export ILLUSTRATION_MODEL="gpt-image-1"
 ```
 
-协议是 OpenAI 兼容的 images/generations,大多数服务都支持,包括各类中转与本地部署。模型能否生图以平台实际为准,报"不支持文生图"时问用户要平台可用的模型名,或从 `/v1/models` 列表里挑。
+协议是 OpenAI 兼容的 images/generations,大多数服务都支持,包括各类中转与本地部署。
+
+模型能否生图以平台实际为准。报"不支持文生图"时,不要猜,按下面的流程探测。
+
+```bash
+# 1. 列出平台全部模型,筛出图像相关的
+curl -s "$ILLUSTRATION_BASE_URL/models" -H "Authorization: Bearer $ILLUSTRATION_API_KEY" \
+  | grep -oE '"id": "[^"]+"' | grep -iE "image|imagen|seedream|wan"
+# 2. 逐个用 generate_illustration.sh 试,直到有一张成功
+```
+
+尺寸差异。不同模型对尺寸要求不同,报 size 无效时按报错调整。
+
+- doubao-seedream 系列要求至少 3,686,400 像素,用 `1920x1920`。
+- wan2.7-image 等支持 `1024x1024`。
+- 输出格式也可能不同(同平台有的返回 jpg 有的返回 png),HTML 引用按实际文件扩展名写,不要想当然。
 
 ## 调用
 
@@ -33,6 +48,16 @@ scripts/generate_illustration.sh "风格前缀 + 主题" docs/notes/images/2020-
 ```
 
 默认尺寸 1024x1024,第三个参数可改。脚本先按 url 模式请求,失败自动重试 b64_json 模式,两种响应都能存图。
+
+## 批量生成
+
+一个编年史通常要 10 到 20 张图(封面加每章一张)。批量流程如下。
+
+1. 先定风格前缀(用户指定或默认),全篇统一,不要每张换风格。
+2. 按章节列主题清单,每章一个主题,配一张图。
+3. 分两到三批生成(每批 5 到 8 张),文件名按章节命名(如 `oc-ch02.jpg`),方便对位。
+4. 生成完批量插入 md 源稿,每章标题行后插入一行 `![图注,与主题相关](images/xxx.jpg)`,图注用中文、不用冒号。
+5. 插入后重新生成站点与 EPUB,检查每个页面至少一张图。
 
 ## 主题清单
 
