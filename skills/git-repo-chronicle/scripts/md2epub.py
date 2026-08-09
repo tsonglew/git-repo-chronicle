@@ -83,7 +83,8 @@ def inline(text):
     text = html.escape(text, quote=False)
     text = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", text)
     text = re.sub(r"`([^`]+)`", r"<code>\1</code>", text)
-    text = re.sub(r"!\[([^\]]*)\]\(([^)\s]+)\)", r'<img alt="\1" src="\2"/>', text)
+    text = re.sub(r"!\[([^\]]*)\]\(([^)\s]+)\)",
+                  r'<figure><img alt="\1" src="\2"/><figcaption>\1</figcaption></figure>', text)
     text = re.sub(r"\[([^\]]+)\]\(([^)\s]+)\)", r'<a href="\2">\1</a>', text)
     return text
 
@@ -243,6 +244,7 @@ pre { background: #f5f2ea; padding: 8px; white-space: pre-wrap; font-size: 0.85e
 blockquote { color: #555; border-left: 3px solid #bbb; padding-left: 12px; margin: 1em 0; }
 img { max-width: 100%; }
 figure { margin: 1.5em 0; text-align: center; }
+figcaption { font-size: 0.85em; color: #777; margin-top: 6px; }
 """
 
     with open(os.path.join(oebps, "styles.css"), "w", encoding="utf-8") as f:
@@ -337,24 +339,161 @@ figure { margin: 1.5em 0; text-align: center; }
     log(f"完成: {out_path}  ({book_title} / {author} / {book_date})")
     return out_path
 
-SITE_CSS = """body { font-family: "Songti SC", "Noto Serif CJK SC", serif; line-height: 1.8; color: #2b2b2b; background: #faf8f4; margin: 0; }
-.book-home { max-width: 720px; margin: 0 auto; padding: 48px 24px; text-align: center; }
-.book-cover { max-width: 320px; box-shadow: 0 4px 16px rgba(0,0,0,.15); margin-bottom: 24px; }
+SITE_CSS = """/* 编年史在线书 · 羊皮纸风 */
+:root {
+  --paper: #f5efe0;
+  --paper-dark: #ede4cf;
+  --ink: #2b2620;
+  --ink-soft: #5c5244;
+  --accent: #8a5a2b;
+  --accent-gold: #c9a227;
+  --line: #d8ccb2;
+  --paper-night: #201b14;
+  --ink-night: #e8e0d0;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", "STSong", serif;
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(201, 162, 39, .06), transparent 55%),
+    radial-gradient(ellipse at 85% 100%, rgba(138, 90, 43, .07), transparent 50%),
+    var(--paper);
+  margin: 0;
+  line-height: 1.9;
+  letter-spacing: .02em;
+}
+
+/* 阅读进度条 */
+#progress {
+  position: fixed; top: 0; left: 0; height: 3px; width: 0;
+  background: linear-gradient(90deg, var(--accent), var(--accent-gold));
+  z-index: 99;
+  transition: width .1s linear;
+}
+
+/* 导航 */
+.book-nav {
+  max-width: 760px; margin: 0 auto; padding: 14px 24px;
+  font-size: .92em; display: flex; gap: 10px; flex-wrap: wrap;
+}
+.book-nav a {
+  color: var(--accent); text-decoration: none;
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: 4px 14px; background: rgba(255,255,255,.35);
+  transition: background .15s, color .15s;
+}
+.book-nav a:hover { background: var(--accent); color: #fdf8ee; }
+
+/* 章节 */
+.chapter { max-width: 720px; margin: 0 auto; padding: 16px 24px 80px; }
+.chapter h1, .chapter h2 { text-align: center; }
+.chapter h2 {
+  margin: 2.2em 0 .4em; font-size: 1.55em; color: var(--ink);
+  letter-spacing: .06em;
+}
+.chapter h2::after {
+  content: ""; display: block; width: 84px; margin: 14px auto 0;
+  border-top: 2px solid var(--accent-gold);
+  border-bottom: 1px solid var(--line); height: 3px;
+}
+.chapter h3 {
+  margin-top: 1.8em; color: var(--accent);
+  border-left: 3px solid var(--accent-gold); padding-left: 10px;
+  letter-spacing: .03em;
+}
+.chapter p { margin: 1em 0; text-align: justify; }
+/* 首字下沉 */
+.chapter > main p:first-of-type::first-letter,
+.chapter > p:first-of-type::first-letter {
+  font-size: 3.1em; float: left; line-height: .85;
+  margin: .05em .12em 0 0; color: var(--accent);
+  font-weight: 600;
+}
+
+/* 数据速览等引用块 */
+blockquote {
+  margin: 1.4em 0; padding: 12px 18px;
+  background: var(--paper-dark); border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0; color: var(--ink-soft);
+}
+blockquote p { margin: .3em 0; }
+
+/* 插图与图注 */
+figure { margin: 2em 0; text-align: center; }
+figure img {
+  max-width: 100%; border-radius: 6px;
+  border: 1px solid var(--line);
+  box-shadow: 0 6px 22px rgba(43, 38, 32, .16);
+}
+figcaption {
+  margin-top: 10px; font-size: .88em; color: var(--ink-soft);
+  letter-spacing: .05em;
+}
+figcaption::before { content: "✎ "; color: var(--accent-gold); }
+
+/* 表格 */
+table { border-collapse: collapse; width: 100%; margin: 1.4em 0; font-size: .94em; }
+th, td { border: 1px solid var(--line); padding: 7px 12px; text-align: left; }
+thead th { background: var(--paper-dark); color: var(--accent); font-weight: 600; }
+tbody tr:nth-child(even) { background: rgba(237, 228, 207, .4); }
+
+/* 代码块与行内代码 */
+pre {
+  background: var(--paper-dark); padding: 14px 16px; overflow-x: auto;
+  font-size: .86em; border-radius: 8px; border: 1px solid var(--line);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace; line-height: 1.6;
+}
+code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .9em; }
+p code { background: var(--paper-dark); padding: 1px 6px; border-radius: 4px; }
+
+/* 首页 */
+.book-home { max-width: 720px; margin: 0 auto; padding: 56px 24px 80px; text-align: center; }
+.book-cover {
+  max-width: 300px; border-radius: 8px;
+  box-shadow: 0 14px 40px rgba(43, 38, 32, .28);
+  border: 1px solid var(--line); margin-bottom: 28px;
+}
+.book-home h1 { font-size: 1.7em; letter-spacing: .08em; margin: 8px 0; }
+.book-meta { color: var(--ink-soft); margin-bottom: 36px; }
 .book-toc { list-style: none; padding: 0; text-align: left; }
-.book-toc li { margin: 10px 0; }
-.book-toc a { text-decoration: none; color: #2b2b2b; }
-.book-toc a:hover { color: #8a5a2b; }
-.book-nav { max-width: 720px; margin: 0 auto; padding: 12px 24px; font-size: .9em; color: #666; }
-.book-nav a { color: #666; text-decoration: none; margin: 0 4px; }
-.chapter { max-width: 720px; margin: 0 auto; padding: 24px; }
-.chapter h1 { text-align: center; }
-.chapter h2 { margin-top: 2em; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
-table { border-collapse: collapse; width: 100%; }
-th, td { border: 1px solid #999; padding: 6px 10px; font-size: .92em; }
-pre { background: #f1ede4; padding: 10px; overflow-x: auto; font-size: .88em; }
-blockquote { color: #555; border-left: 3px solid #bbb; padding-left: 12px; margin: 1em 0; }
-img { max-width: 100%; }
-figure { margin: 1.5em 0; text-align: center; }
+.book-toc li { margin: 0; border-bottom: 1px dashed var(--line); }
+.book-toc a {
+  display: flex; justify-content: space-between; align-items: baseline;
+  text-decoration: none; color: var(--ink); padding: 12px 6px;
+  transition: color .15s, padding-left .15s;
+}
+.book-toc a::after { content: "→"; color: var(--accent-gold); font-size: .9em; }
+.book-toc a:hover { color: var(--accent); padding-left: 14px; }
+
+/* 暗色模式 */
+@media (prefers-color-scheme: dark) {
+  body {
+    color: var(--ink-night);
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(201, 162, 39, .05), transparent 55%),
+      var(--paper-night);
+  }
+  .chapter h2 { color: var(--ink-night); }
+  blockquote { background: #2a241b; color: #c9bfa9; border-left-color: var(--accent-gold); }
+  .book-toc a { color: var(--ink-night); }
+  table th, table td { border-color: #4a4234; }
+  thead th { background: #2a241b; }
+  tbody tr:nth-child(even) { background: rgba(74, 66, 52, .35); }
+  pre, p code { background: #2a241b; color: var(--ink-night); border-color: #4a4234; }
+  figcaption { color: #b5ab93; }
+  .book-nav a { background: rgba(42, 36, 27, .6); }
+  img, .book-cover { opacity: .92; }
+}
+
+/* 移动端 */
+@media (max-width: 640px) {
+  body { font-size: 16.5px; }
+  .chapter { padding: 8px 16px 64px; }
+  .book-home { padding: 32px 16px 64px; }
+  .chapter h2 { font-size: 1.35em; }
+}
 """
 
 def make_site(md_path, site_dir, cover_path, author):
@@ -416,6 +555,7 @@ def make_site(md_path, site_dir, cover_path, author):
 <link rel="stylesheet" href="../styles.css"/>
 </head>
 <body>
+<div id="progress"></div>
 <nav class="book-nav">{nav}</nav>
 <main class="chapter">
 {chunk}
@@ -423,6 +563,16 @@ def make_site(md_path, site_dir, cover_path, author):
 <footer class="book-nav">{nav}</footer>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <script>mermaid.initialize({{startOnLoad:true, theme:'neutral'}});</script>
+<script>
+(function () {{
+  var bar = document.getElementById('progress');
+  addEventListener('scroll', function () {{
+    var h = document.documentElement;
+    var p = h.scrollTop / (h.scrollHeight - h.clientHeight || 1);
+    bar.style.width = (p * 100) + '%';
+  }}, {{passive: true}});
+}})();
+</script>
 </body>
 </html>
 """)
