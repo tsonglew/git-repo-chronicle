@@ -7,8 +7,41 @@
 | 格式 | 定位 | 工具 |
 |---|---|---|
 | EPUB 3 | 默认出版物,微信读书、Apple Books、Kindle(经 Calibre 转换)可读 | scripts/md2epub.py,纯 Python 标准库,零依赖 |
-| 在线书(HTML 站点) | 网页版,目录页加分章页,扔静态托管即上线 | 同脚本的 --site 模式 |
+| 在线书(VitePress) | 推荐形态,成熟框架主题,含侧边栏目录、本地搜索、深色模式、上一章下一章 | VitePress + vitepress-plugin-mermaid |
+| 在线书(零依赖) | 备选形态,md2epub.py 的 --site 模式,无 node 环境时用 | 同脚本的 --site 模式 |
 | PDF | 可选,需要 pandoc 加 xelatex,不默认 | pandoc --pdf-engine=xelatex |
+
+## 在线书(推荐用 VitePress)
+
+成熟框架主题优先,不要自造样式。VitePress 默认主题自带侧边栏章节目录、本地搜索、深色模式、目录大纲、上一章下一章导航,全部开箱即用。参考实现是 openclaw-chronicle 仓库(https://openclaw-chronicle.vercel.app)。
+
+```bash
+# 初始化
+npm init -y
+npm install vitepress vitepress-plugin-mermaid
+# 结构
+#   package.json          scripts: docs:build = vitepress build docs
+#   vercel.json           framework: vitepress, output: docs/.vitepress/dist
+#   docs/.vitepress/config.mts   标题、侧边栏、搜索、mermaid 插件
+#   docs/index.md                 首页(封面与核心结论)
+#   docs/chapters/chNN.md         按章拆分
+#   docs/public/images/           插图与封面
+# 构建与部署
+npm run docs:build
+npx vercel deploy --prod --yes --name <项目名>
+```
+
+要点如下。
+
+- 章节按 `##` 拆分到 docs/chapters/,每章一个文件,标题行改成 `#`。
+- 图片引用路径改成 `/images/xxx.jpg`(public 根)。
+- 侧边栏在 config.mts 里按章节顺序手工列出,保证章节顺序可控。
+- Mermaid 用 vitepress-plugin-mermaid,浏览器端渲染,无需预渲染。
+- 部署用 Vercel 框架构建(vercel.json 指定 buildCommand 与 outputDirectory),不是静态直传。
+
+## 在线书(零依赖备选)
+
+没有 node 环境时,用 md2epub.py 的 --site 模式,生成自包含静态站,双击 index.html 可读。样式为内置的羊皮纸编年史风,功能少于框架版(无搜索、无侧边栏),但零依赖。
 
 ## 转换命令
 
@@ -16,21 +49,11 @@
 python3 scripts/md2epub.py <编年史.md> <输出.epub> [--site 在线书目录] [--cover 封面.png] [--author 作者名]
 ```
 
-- 加 `--site` 时,同一份源稿额外生成在线书目录,含index.html 目录页、chapters/ 分章页、styles.css、images/。
+- 加 `--site` 时,同一份源稿额外生成零依赖在线书目录,含 index.html 目录页、chapters/ 分章页、styles.css、images/。
 - 标题自动取文档第一个 `#` 标题。
 - 作者用 `--author` 指定,没指定用 git 用户。
 - 语言固定 zh,日期取文档里的"整理日期",没有则用当天。
 - 目录按二级标题自动生成,阅读器可跳转。
-
-## 在线书
-
-在线书跑在浏览器里,可以执行 JavaScript,所以 Mermaid 图由 mermaid.js 在浏览器实时渲染(章节页引用 jsdelivr CDN),不需要预渲染,这是它与 EPUB 最大的区别。EPUB 的 Mermaid 才需要 mmdc 或 kroki 预渲染。
-
-部署方式任选。
-
-- 本地阅读,双击 index.html。
-- 上线,把 site/ 目录推到 GitHub Pages、Vercel 或任意静态托管,配一个域名或子路径。
-- 章节页引用了 CDN,离线打开时 Mermaid 不渲染但源码块可见;要完全离线,把 mermaid.min.js 下载到 site/ 下改成本地引用。
 
 ## 封面
 

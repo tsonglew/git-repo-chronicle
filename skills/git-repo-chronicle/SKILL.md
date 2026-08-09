@@ -83,7 +83,7 @@ version: 0.1.0
 - 附录。写 PR 时间线(★ 标重大事件)、本地 fork 提交清单、论坛数据。
 - 配图。按 `references/diagrams.md` 的规范配 Mermaid 图,默认 timeline 和 flowchart。§0 画生命周期 timeline,架构转型章画迁移前后对比,里程碑章画架构快照,§11 画互文时刻流程。图里数字与正文一致。
 - 插图(可选)。用户提供了生图配置(ILLUSTRATION_BASE_URL、ILLUSTRATION_API_KEY、ILLUSTRATION_MODEL)时,按 `references/illustrations.md` 生成插图。风格用用户指定的描述,没指定就用默认的手绘编年史风,统一放 `docs/notes/images/` 并嵌入对应章节。缺配置或生成失败就跳过,不阻塞交稿,在回复里说明原因。
-- 出版。用户选了 EPUB 或在线书输出时,按 `references/publishing.md` 转成出版物。有生图配置就先生成 3 比 4 封面,再运行 `scripts/md2epub.py <编年史.md> <输出.epub> --site <站点目录> --author <作者>`,最后按规范校验。在线书站点可以直接部署到静态托管。
+- 出版。用户选了 EPUB 或在线书输出时,按 `references/publishing.md` 转成出版物。有生图配置就先生成 3 比 4 封面,再转格式。在线书优先用 VitePress 框架主题(侧边栏目录、本地搜索、深色模式),没有 node 环境时退回 `scripts/md2epub.py --site` 的零依赖静态站。
 - 文末。写数据方法论注记(口径、推断、覆盖率)。
 
 写作风格要求是双线并行不混写、微观提交与宏观判断结合、每条论断可溯源(提交哈希 / issue 编号 / URL)、未证实推断显式标注且绝不编造、戏剧化叙事可用但必须以事实为骨。
