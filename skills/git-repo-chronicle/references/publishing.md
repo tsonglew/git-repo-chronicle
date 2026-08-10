@@ -58,6 +58,10 @@ EOF
 ## Vercel 部署
 
 ```bash
+# vercel.json 必须配 "cleanUrls": true
+# 否则 VitePress 的无扩展名链接(/chapters/ch10)刷新时返回 404 空壳,
+# 表现为"刷新后正文消失"。VitePress 的 cleanUrls 只管客户端链接,
+# 服务器端重写靠 Vercel 的 cleanUrls 配置。
 # 首次:CLI 登录(设备码授权,与 MCP 授权独立)
 npx vercel login          # 打开返回的 https://vercel.com/oauth/device?user_code=XXXX-XXXX
 # 部署:--name 指定项目名;目录里已有 .vercel 链接时 --name 会被忽略,
