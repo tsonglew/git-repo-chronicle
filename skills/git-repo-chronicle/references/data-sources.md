@@ -4,6 +4,31 @@
 
 编年史的六类数据源是 git 提交、release/tag、issue/PR、论坛讨论、RSS、新闻与时代背景。按序采集,逐类归档到输出目录,保持文件命名一致,便于阶段 2/3 引用。
 
+## 最快路径,先跑这三条
+
+数据采集的最小动作。这三条跑完就有了写作所需的全部统计数字,后面几类是补充。
+
+```bash
+# 1. 克隆(大仓库加 --filter=blob:none --no-checkout 防超时)
+git clone --quiet <url> /tmp/<repo>-chronicle
+
+# 2. 导出提交与统计,产出 commits.tsv、per_year.tsv、per_month.tsv、per_author.tsv、tags.tsv
+bash scripts/dump_git_history.sh /tmp/<repo>-chronicle /tmp/<repo>-meta
+
+# 3. 拉 GitHub 元数据,产出 releases.json、issues.json、prs.json、pr_issue_links.tsv
+bash scripts/fetch_github_meta.sh <owner/repo> /tmp/<repo>-meta
+```
+
+跑完先看这几个数,它们决定章节怎么分。
+
+```bash
+cat /tmp/<repo>-meta/meta.txt          # 总提交数、首末提交、tag 数
+cat /tmp/<repo>-meta/per_month.tsv     # 月份 | 提交数 | 作者数,决定按月还是按年分章
+head -10 /tmp/<repo>-meta/per_author.tsv  # 谁是核心作者
+```
+
+分章规则很简单。项目跨多年就按年分章;项目只有几个月但提交密集(如单月上千条)就按月分章;某几个月提交量都很低,合成一章并在标题里写明"X 到 Y 月合计 N 条"。
+
 ## 1. git 提交(最核心)
 
 > 先跑 scripts/dump_git_history.sh <仓库> <输出目录>,得 commits.tsv 与月度/作者统计
@@ -49,7 +74,7 @@ gh issue view <n> --repo <owner/repo>   # 关键 issue 的正文与评论
 - 无 gh 时改用 API 拉取,`curl -s "https://api.github.com/repos/<owner>/<repo>/issues?state=all&per_page=100&page=N"`,分页直到返回空数组。速率限制是未认证 60 次/小时,`gh auth` 或 `GITHUB_TOKEN` 后 5000 次/小时。
 - 实战坑一,release 字段差异。部分实例的 release 没有 body 字段,`--json body` 会报 Unknown JSON field,去掉该字段即可。fetch_github_meta.sh 已按此处理。
 - 实战坑二,issue 被禁用。仓库在设置里关掉 issues 后,gh 报 "disabled issues",issues.json 为空,属正常,不是抓取失败。
-- 实战坑三,PR 不在本仓库。fork 仓库可能查不到上游 PR(gh pr list 为空)。此时从提交消息提取 `#N` 编号重建 PR 时间线:`grep -oE '#[0-9]{2,4}' commits.tsv | sort -u`,按首次出现的年份归入附录 A,编号池跨仓库迁移时在方法论中注明。
+- 实战坑三,PR 不在本仓库。fork 仓库可能查不到上游 PR(gh pr list 为空)。此时从提交消息提取 `#N` 编号重建 PR 时间线,命令是 `grep -oE '#[0-9]{2,4}' commits.tsv | sort -u`,按首次出现的年份归入附录 A,编号池跨仓库迁移时在方法论中注明。
 - 多语言 issue(韩语、西语、中文等)本身就是社区全球化的证据,翻译后引用,并在原文旁标注语言。
 - 历史 issue 的讨论串是"社区呼声"的直接证据,标注 `#编号` 供附录速查。
 
