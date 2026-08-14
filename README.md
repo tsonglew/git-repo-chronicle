@@ -4,7 +4,14 @@
 
 ## 在线示例
 
-### OpenClaw 编年史的在线书
+### DeepSeek Harness 开发编年史
+
+https://dsh-chronicle-duv8yxo8n-tsonglews-projects.vercel.app/
+
+<img width="1144" height="928" alt="image" src="https://github.com/user-attachments/assets/ffb50dc7-0d4f-490b-8d3f-80b7ecac5edc" />
+
+
+### OpenClaw 编年史
 
 https://openclaw-chronicle.vercel.app
 
