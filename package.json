@@ -32,6 +32,6 @@
     "git"
   ],
   "scripts": {
-    "test": "node --check install.js"
+    "test": "node --check install.js && python3 -B -m unittest discover -s tests -v"
   }
 }

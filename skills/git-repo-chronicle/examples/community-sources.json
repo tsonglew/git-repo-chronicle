@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "repository": "https://github.com/tsonglew/git-repo-chronicle",
+  "sources": [
+    {
+      "id": "official-forum",
+      "kind": "forum",
+      "url": null,
+      "enabled": false,
+      "notes": "模板：填入已核实的官方论坛入口；未发现或未配置不代表不存在。"
+    },
+    {
+      "id": "reddit",
+      "kind": "reddit",
+      "url": null,
+      "enabled": false,
+      "notes": "模板：填入项目相关 subreddit 或搜索入口；成文引用具体帖子/评论。"
+    },
+    {
+      "id": "hacker-news",
+      "kind": "hacker_news",
+      "url": null,
+      "enabled": false,
+      "notes": "模板：填入已核实的 HN 讨论或搜索入口；成文引用具体 item。"
+    },
+    {
+      "id": "release-notes",
+      "kind": "release_notes",
+      "url": "https://github.com/tsonglew/git-repo-chronicle/releases",
+      "enabled": true,
+      "notes": "发现入口；页面存在不等于已有发行版，需实际读取后记录。"
+    },
+    {
+      "id": "release-feed",
+      "kind": "rss",
+      "url": "https://github.com/tsonglew/git-repo-chronicle/releases.atom",
+      "enabled": true,
+      "notes": "与 release-notes 去重；feed 不保证包含全部历史。"
+    },
+    {
+      "id": "blog-feed",
+      "kind": "rss",
+      "url": null,
+      "enabled": false,
+      "notes": "模板：填入官方或维护者博客 RSS URL，并核对其身份。"
+    }
+  ]
+}

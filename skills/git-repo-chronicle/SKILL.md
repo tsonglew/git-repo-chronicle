@@ -1,7 +1,8 @@
 ---
 name: git-repo-chronicle
 description: 为有长期历史的 GitHub 项目撰写《项目开发编年史》。This skill should be used when the user asks to "写项目编年史", "整理项目开发历史", "做一部项目开发编年史", "项目开发史", "从零到一的七年", "把提交历史整理成编年史", "write a project chronicle", "chronicle this repo", or wants a narrative history of a codebase that combines commits, releases, issues, forum discussions, RSS, news, and the historical context of the era.
-version: 0.1.0
+metadata:
+  version: "0.1.0"
 ---
 
 # 项目开发编年史 (git-repo-chronicle)
@@ -14,6 +15,7 @@ version: 0.1.0
 
 - 用户给出一个 GitHub 仓库地址或本地 git 仓库路径,要求"写编年史""项目历史""开发史""从零到一""chronicle"。
 - 用户想理解一个项目为什么这样演进,比如架构决策、社区影响、时代背景、停更与复活。
+- 用户已有编年史,要求续写新一年、新 release 或只补上次截点之后的历史。此时先读 `references/incremental.md`,沿用旧章口吻并追加新章或近况。
 - 产出为一份 Markdown 长文,含表格、时间线、附录,写入用户指定的路径。默认写到 `<仓库>/docs/notes/项目开发编年史-从零到一.md`,只读仓库写到当前目录。
 
 ## 七条铁律(违反任何一条都要重写)
@@ -24,9 +26,9 @@ version: 0.1.0
 2. **每条提交行必须有真哈希**。哈希取 `commits.tsv` 里的前 7 位,不许编造、不许写 `abc1234` 这种占位符。
 3. **每章必须有数据速览引用块**。格式是 `> 本月 X 条提交,Y 位活跃作者,Z 个 tag(版本号范围)`,一章一行,放在一句话开头之后。
 4. **推断必须显式标注**。凡是从邮箱、时区、编号跳变推出来的结论,句末加 `[推断:依据,未证实]`,不许把推断写成事实。
-5. **章节结构固定**。每章依次是 h2 章节标题、插图(可选)、一句话、数据速览、正文段落、`### 事件批次`、`### 本章之变`、`### 本章关键词`,顺序不许换,分节标题不许改名。
+5. **章节结构固定**。每章依次是 h2 章节标题、插图(可选)、一句话、数据速览、活动节奏图(推荐)、正文段落、`### 事件批次`、`### 本章之变`、`### 本章关键词`。贡献者内容可放在正文或事件批次中,三个固定分节保持顺序与名称。
 6. **PR 与 issue 编号加链接**。正文里的 `PR #123` 写成 `[PR #123](https://github.com/<owner>/<repo>/pull/123)`,提交消息原文和代码块里的编号不加。
-7. **拿不到的数据写"未获取"**。论坛抓不到、issue 被禁用、PR 查不到,就在文末方法论里写明,不许用"据推测""可能有"填空。
+7. **拿不到的数据写"未获取"**。凡写社区反应,必须有具体来源及已读取的正文证据;拿不到就写"未获取"及原因,不编造反应。论坛抓不到、issue 被禁用、PR 查不到,都在文末方法论记录覆盖缺口,不能把失败统计成零反应。
 
 ## 最小可用版本(时间或数据不足时的下限)
 
@@ -34,7 +36,7 @@ version: 0.1.0
 
 | 必须有 | 可以省 |
 |---|---|
-| 题头(日期、数据来源、核心结论) | 插图、封面 |
+| 题头 + 三幕梗概(起因、转折、现状,关键论断带来源) | 插图、封面 |
 | §0 全景数字表 + 年度提交量图 | Mermaid 图 |
 | §1 人物图鉴表格 | §11 论坛回声 |
 | 按年章节(每章一句话 + 数据速览 + 事件批次 + 本章之变) | 附录 B、附录 C |
@@ -52,6 +54,11 @@ version: 0.1.0
 |---|---|---|
 | 目标语言 | 中文 | 中文、英文、中英对照 |
 | 时间范围 | 全部历史 | 指定年份区间 |
+| 写作模式 | 首次完整生成;已有截点时增量续写 | 完整、增量(只追加)、显式勘误 |
+| 章节类型 | 默认中英词表 | 自定义词表,按证据选类型 |
+| 章首活动图 | 推荐月度提交柱状图 | 热力图、其他统计图、缺图注明原因 |
+| 社区来源配置 | 项目提供的 URL 清单,缺失时检索 | 复制 `examples/community-sources.json` 后填写 |
+| 代码存活附录 | 关闭 | 大重写、长期仓库按需启用 |
 | 篇幅深度 | 完整版 | 完整版、精编版(每章只留代表性提交) |
 | 叙事重点 | 均衡 | 技术架构、社区故事、人物传记、均衡 |
 | 结构模板 | 完整 | 完整、精简(去掉论坛回声与附录) |
@@ -73,17 +80,18 @@ version: 0.1.0
 
 2b. 确认产物 footer。用户没提时,主动问一句"文末保留 powered by git-repo-chronicle 的链接吗,默认保留",按回答在阶段 3 决定加不加。
 
-3. 克隆仓库到临时目录,命令是 `git clone --quiet <url> /tmp/<repo>-chronicle`;本地路径直接使用。提交历史巨大(预估数万条)时,直接克隆会超时,改用 `git clone --filter=blob:none --no-checkout`,只拉提交历史、不拉文件内容,编年史不需要 blob。
+3. 克隆仓库到临时目录,命令是 `git clone --quiet <url> /tmp/<repo>-chronicle`;本地路径直接使用。提交历史巨大时可用 `git clone --filter=blob:none --no-checkout`,先拉历史,核实代码锚点或代码存活分析时再按需获取 blob。
 4. 粗查规模,看 `git log --oneline | wc -l` 与首末提交日期。提交数超过 5000(用户可改阈值)时采用抽样策略(见 `references/data-sources.md`「大仓库策略」),并在文末方法论中标注口径。
+5. 已有编年史时读取截点文件,按 `references/incremental.md` 校验仓库、旧稿摘要和 commit 祖先关系。没有可靠截点时先核实旧稿的覆盖范围,不猜日期重写旧章。完整生成仍走下列流程;增量模式只对新增范围执行阶段 1 到 4。
 
 ### 阶段 1 数据采集(六类来源)
 
 按用户偏好的数据源范围裁剪。选"仅 git 提交"时跳过 2 到 6,省去检索时间。
 
-1. **git 提交**(最核心)。运行 `scripts/dump_git_history.sh <仓库路径> <输出目录>`,得到六个文件。`commits.tsv`(哈希、作者、邮箱、日期、标题)、`commits_full.log`(含正文,供精读)、`per_year.tsv`(年份、提交数、作者数)、`per_month.tsv`(月份、提交数、作者数,数据速览用)、`per_author.tsv`(提交数、作者、邮箱)、`tags.tsv`(tag、日期)。检查合并提交,从提交消息中提取 PR 编号(`#N`),年份以合入日期为准。
+1. **git 提交**(最核心)。运行 `scripts/dump_git_history.sh <仓库路径> <输出目录>`,得到 `commits.tsv`(哈希、作者、邮箱、committer ISO 日期、标题)、`commits_full.log`(含正文,供精读)、`per_year.tsv`、`per_month.tsv`(年月、提交数、作者数)、`per_author.tsv`(提交数、作者、邮箱)、`tags.tsv`(tag、日期)及 `meta.txt`(截点与统计口径)。年月按 committer 日期的原时区聚合,不等同于 PR 的 `mergedAt`;正文写合入事件时单独核实 PR 日期。检查 merge,从消息中提取 PR 编号。增量使用截点脚本的 commit 范围导出,不靠日期排除迟合并的旧提交。
 2. **release / tag**。运行 `scripts/fetch_github_meta.sh <owner/repo> <输出目录>`(依赖 gh),得到 `releases.json`、`issues.json`、`prs.json`、`pr_issue_links.tsv`(PR 与 issue 的 Closes 关联,动机链素材)。本地克隆用 `git tag -l --sort=creatordate --format='%(refname:short) %(creatordate:iso-strict)'` 兜底。
 3. **issue / PR**。用 `gh issue list --state all`、`gh pr list --state all`(含 `mergedAt`)拉取;关键 issue 用 `gh issue view <n>` 读正文与讨论。未装 gh 时用 GitHub API 分页拉取。
-4. **论坛讨论**。先定位项目官方论坛,看 README 里的链接、官网 footer,或搜索"项目名 forum";老项目常见于垂直社区,如传奇私服的 LOMCN。抓取相关帖的标题、作者、日期、回复数与浏览数;关键帖读正文,必要时用镜像站或存档站交叉验证。
+4. **论坛讨论**。先读项目级来源清单,逐项记录论坛、Reddit、HN 等 URL 的采集结果。无配置时从 README、官网或搜索定位来源。按 `references/data-sources.md` 保存 `community.json`,含来源、发布时间、采集时间、状态、证据摘录及失败原因;关键帖读正文,必要时核对快照。官方发行说明只能证明发布事实,不能充当用户反应。
 5. **RSS**。GitHub 自带 `https://github.com/<owner>/<repo>/releases.atom` 与 `commits/<branch>.atom`,能快速拿到发布时间线;项目博客、官方通告的 RSS 优先。
 6. **新闻与时代背景**。对每个活跃年份,搜索「项目名 + 年份」以及技术栈当年大事(某框架版本发布、平台政策变化、行业风向),用来解释提交背后的动机。检索时用年份限定关键词,防止拿到近期结果。
 
@@ -93,35 +101,43 @@ version: 0.1.0
 2. 识别重大事件,如架构迁移、跨平台、重写、发布、fork、停更与复活、社区里程碑。
 3. 找出"互文时刻"。社区先有呼声(高回复帖)、代码后落地(对应提交),或代码先行、社区随后跟进,这是编年史最有价值的部分。
 4. 建立人物图鉴。记录每位作者的提交数、活跃期、角色定位;用邮箱域名、时区偏移、论坛署名交叉推断身份,未证实的标注「[推断:…未证实]」。
+5. **贡献者指纹**。检查本章主要贡献者、首次参与者及其修改路径,为角色判断附代表 commit。用 `git shortlog` 与路径历史复核,说明 mailmap/同名账户处理;提交量与首次出现不能单独证明进入核心团队。格式见结构模板。
+6. 按证据选章节类型,使用「类型 · 具体事件」标题。Quiet 不等于放弃、Crisis 需要事故或争议的直接材料。大重写或多年仓库可按结构模板增加代码存活附录,把工具产物和范围、口径归档,正文与附录互链。
 
 ### 阶段 3 写作
 
-严格按 `references/chronicle-structure.md` 的结构模板写作。下面这张表是全文骨架,按顺序写,不要跳。
+首次完整成文按 `references/chronicle-structure.md` 的结构模板写作。下面这张表是全文骨架。增量模式保留旧题头、梗概、人物表和统计,在追加内容注明新截点;只有少量新材料时可写「近况」节,勘误与近况不强套完整年度章或两个事件批次,详见 `references/incremental.md`。
 
 | 顺序 | 部分 | 内容要点 |
 |---|---|---|
 | 1 | frontmatter | title、author、date、lang |
 | 2 | h1 书名 | `# 《项目开发编年史,从 X 到 Y 的 N 年》` |
 | 3 | 题头引用块 | 整理日期、数据来源(如"488 条 git 提交逐一核对")、核心结论一句话 |
+| 3a | 三幕梗概 | 起因 → 转折 → 现状,约 300–800 字,每幕关键论断挂代表 commit/release,正文仍完整保留 |
 | 4 | §0 项目是什么 | 背景两段、全景数字表、年度提交量 ASCII 条形图、Mermaid timeline |
 | 5 | §1 人物图鉴 | 作者表格(提交数、占比、活跃期、角色定位)、月度作者曲线 |
 | 6 | §2 到 §9 按年章节 | 每章按下面的单章模板写 |
 | 7 | §10 尾声 | 三到五条经验总结 |
 | 8 | §11 论坛回声 | 社区史小节、热度对照表、互文时刻 |
 | 9 | 附录 A | PR 时间线,编号带链接,★ 标重大事件 |
-| 10 | 文末注 | 数据方法论(口径、推断清单、覆盖率) |
+| 9a | 可选附录 | 代码存活/年代队列,链接回对应转折章;不以行数认定技术债或代码质量 |
+| 10 | 文末注 | 数据方法论(截点、日期与 merge 口径、推断清单、来源覆盖率及未获取原因) |
 | 11 | footer | 用户选择保留时加署名行 |
 
 单章模板可以直接照抄,把尖括号里的内容换成真实数据。
 
 ```markdown
-## §N <年月> <阶段名>(<提交数> 条)
+## §N <年月> <类型> · <具体事件>(<提交数> 条)
 
 ![<图注>](images/<文件名>.jpg)
 
 一句话。<本章主题,一句带画面或动作的话>
 
 > 本月 <X> 条提交,<Y> 位活跃作者,<Z> 个 tag(<版本号范围>)
+
+![<年月>提交活动,数据来自 per_month.tsv](images/activity-<年份>.svg)
+
+<图注含统计范围、截点、时区、是否含 merge。缺图时写未生成及原因。>
 
 <第一段。这个阶段项目在做什么,处于什么位置,外部环境如何>
 
@@ -154,6 +170,9 @@ version: 0.1.0
 其余部分的补充要求。
 
 - 配图。按 `references/diagrams.md` 配 Mermaid 图,§0 画生命周期 timeline,架构转型章画迁移前后对比,§11 画互文时刻流程。图里数字与正文一致。
+- 活动节奏图。推荐每年章首在数据速览后放一张真实提交活动图,可运行 `scripts/render_activity.py`;尺寸、输入与缺图降级见配图规范。插画不能替代数据图。
+- 时光机锚点。架构转折、行为变更和重大删除的关键结论旁,按结构模板给出固定完整 SHA 的 tree/blob 链接或只读 `git show` 命令;删除内容链接到删除前的父提交,不使用浮动分支链接。
+- 增量续写。新文本先写独立文件并验证,再用 `scripts/chronicle_checkpoint.py append` 追加。已发布正文不无声改写;更正另起「勘误」节,列出原论断、修正和证据。仅成功追加后推进截点。
 - 插图(可选)。用户提供了生图配置(ILLUSTRATION_BASE_URL、ILLUSTRATION_API_KEY、ILLUSTRATION_MODEL)时,按 `references/illustrations.md` 生成插图,统一放 `docs/notes/images/`。缺配置或生成失败就跳过,不阻塞交稿,在回复里说明原因。
 - 出版。用户选了 EPUB 或在线书输出时,按 `references/publishing.md` 转成出版物。在线书优先用 VitePress 框架主题,没有 node 环境时退回 `scripts/md2epub.py --site`。
 - 产物 footer。用户选择保留时,文末加分隔线 `---` 与一行"本文由 [git-repo-chronicle](https://github.com/tsonglew/git-repo-chronicle) 生成"。
@@ -172,6 +191,9 @@ version: 0.1.0
 8. **出版校验**。出了 EPUB 或在线书的,按 `references/publishing.md` 的清单过一遍。
 9. **发布审计**。要推送到公开仓库时,先扫真实 API key(`sk-` 开头长串)、内网域名与 IP、本地绝对路径、临时文件,git 历史也要查。命中就清理后再推。
 10. **交付说明**。回复里给出文件路径、全文字数、章节数,以及跳过了什么(插图、论坛数据、EPUB)和为什么。
+11. **新增内容检查**。三幕梗概有来源;章节类型有证据;活动图与章节范围一致;贡献者判断有路径与代表提交;代码存活附录标明方法和局限;时光机锚点能定位历史代码。
+12. **社区来源检查**。逐条核对社区反应与已读取的来源正文,无证据就删除判断并写「未获取」及原因。缺口进入方法论,失败清单与成功结果分开保留。
+13. **截点检查**。首次完成后按增量文档初始化 checkpoint。续写后验证旧稿字节前缀保持不变、相同批次不能重复追加、来源失败未推进对应水位;文档与截点一同保存。
 
 ## 写对与写错的对照
 
@@ -205,14 +227,19 @@ version: 0.1.0
 - **`references/diagrams.md`** 配图规范,Mermaid 图类型、写法示例、导出与校验。
 - **`references/illustrations.md`** 插图规范,风格前缀、模型探测、批量流水线与失败降级。
 - **`references/publishing.md`** 出版规范,EPUB 与在线书(框架主题优先)、封面、Mermaid 预渲染与校验清单。
+- **`references/incremental.md`** 已有编年史续写时读取,含截点格式、增量采集、追加与勘误流程。
 
 ### Scripts
 
 - **`scripts/dump_git_history.sh`** 导出 git 提交为 TSV,并生成年度与作者统计。
 - **`scripts/fetch_github_meta.sh`** 用 gh 拉取 release、issue、PR 元数据,无 gh 时给出 API 兜底提示。
+- **`scripts/render_activity.py`** 从月度提交 TSV 生成章首 SVG 活动图,无需第三方库。
+- **`scripts/chronicle_checkpoint.py`** 保存截点、按范围整理新增材料并校验追加,保留旧章正文。
 - **`scripts/generate_illustration.sh`** 调用生图 API 生成手绘风插图,支持 url 与 b64_json 两种响应。
 - **`scripts/md2epub.py`** 把编年史 Markdown 转成 EPUB 3 电子书与在线书站点,纯 Python 标准库,零依赖,支持封面、目录与 Mermaid(EPUB 预渲染,在线书浏览器端渲染)。
 
 ### Examples
 
 - **`examples/chronicle-excerpt.md`** 编年史片段示例(虚构项目),含题头、章节、提交行、论坛回声与附录的完整格式示范。
+- **`examples/repository-chronicle.md`** 当前项目真实历史样章,展示三幕梗概、章节类型、活动图、贡献者指纹与历史代码锚点。
+- **`examples/community-sources.json`** 项目级社区来源配置样例,使用前替换为目标项目 URL。

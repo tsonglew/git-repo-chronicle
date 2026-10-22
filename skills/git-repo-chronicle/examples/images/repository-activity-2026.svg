@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="360" viewBox="0 0 960 360" role="img" aria-labelledby="title desc">
+<title id="title">git-repo-chronicle · 2026 提交活动</title>
+<desc id="desc">截至 2026-08-14，合计 35 条提交。1月 0 条；2月 0 条；3月 0 条；4月 0 条；5月 0 条；6月 0 条；7月 0 条；8月 35 条；9月未覆盖；10月未覆盖；11月未覆盖；12月未覆盖。committer 日期原时区按月聚合 · 含 merge · 来源 per_month.tsv</desc>
+<rect width="960" height="360" rx="16" fill="#faf7f0"/>
+<g font-family="system-ui, sans-serif" fill="#302d29">
+<text x="40" y="38" font-size="22" font-weight="700">git-repo-chronicle · 2026 提交活动</text>
+<text x="40" y="64" font-size="13">截至 2026-08-14 · 已覆盖月份共 35 条提交</text>
+<line x1="42" y1="260" x2="918" y2="260" stroke="#b3aa9b"/>
+<rect data-month="2026-01" data-count="0" x="50" y="260.00" width="48" height="0.00" rx="4" fill="#437b6a"/>
+<text x="74" y="248.00" text-anchor="middle" font-size="14">0</text>
+<text x="74" y="282" text-anchor="middle" font-size="13">01</text>
+<rect data-month="2026-02" data-count="0" x="123" y="260.00" width="48" height="0.00" rx="4" fill="#437b6a"/>
+<text x="147" y="248.00" text-anchor="middle" font-size="14">0</text>
+<text x="147" y="282" text-anchor="middle" font-size="13">02</text>
+<rect data-month="2026-03" data-count="0" x="196" y="260.00" width="48" height="0.00" rx="4" fill="#437b6a"/>
+<text x="220" y="248.00" text-anchor="middle" font-size="14">0</text>
+<text x="220" y="282" text-anchor="middle" font-size="13">03</text>
+<rect data-month="2026-04" data-count="0" x="269" y="260.00" width="48" height="0.00" rx="4" fill="#437b6a"/>
+<text x="293" y="248.00" text-anchor="middle" font-size="14">0</text>
+<text x="293" y="282" text-anchor="middle" font-size="13">04</text>
+<rect data-month="2026-05" data-count="0" x="342" y="260.00" width="48" height="0.00" rx="4" fill="#437b6a"/>
+<text x="366" y="248.00" text-anchor="middle" font-size="14">0</text>
+<text x="366" y="282" text-anchor="middle" font-size="13">05</text>
+<rect data-month="2026-06" data-count="0" x="415" y="260.00" width="48" height="0.00" rx="4" fill="#437b6a"/>
+<text x="439" y="248.00" text-anchor="middle" font-size="14">0</text>
+<text x="439" y="282" text-anchor="middle" font-size="13">06</text>
+<rect data-month="2026-07" data-count="0" x="488" y="260.00" width="48" height="0.00" rx="4" fill="#437b6a"/>
+<text x="512" y="248.00" text-anchor="middle" font-size="14">0</text>
+<text x="512" y="282" text-anchor="middle" font-size="13">07</text>
+<rect data-month="2026-08" data-count="35" x="561" y="110.00" width="48" height="150.00" rx="4" fill="#437b6a"/>
+<text x="585" y="98.00" text-anchor="middle" font-size="14">35</text>
+<text x="585" y="282" text-anchor="middle" font-size="13">08</text>
+<rect data-month="2026-09" data-status="uncovered" x="634" y="110" width="48" height="150" rx="4" fill="#ebe6dc"/>
+<text x="658" y="196" text-anchor="middle" font-size="12" fill="#756d60">未覆盖</text>
+<text x="658" y="282" text-anchor="middle" font-size="13">09</text>
+<rect data-month="2026-10" data-status="uncovered" x="707" y="110" width="48" height="150" rx="4" fill="#ebe6dc"/>
+<text x="731" y="196" text-anchor="middle" font-size="12" fill="#756d60">未覆盖</text>
+<text x="731" y="282" text-anchor="middle" font-size="13">10</text>
+<rect data-month="2026-11" data-status="uncovered" x="780" y="110" width="48" height="150" rx="4" fill="#ebe6dc"/>
+<text x="804" y="196" text-anchor="middle" font-size="12" fill="#756d60">未覆盖</text>
+<text x="804" y="282" text-anchor="middle" font-size="13">11</text>
+<rect data-month="2026-12" data-status="uncovered" x="853" y="110" width="48" height="150" rx="4" fill="#ebe6dc"/>
+<text x="877" y="196" text-anchor="middle" font-size="12" fill="#756d60">未覆盖</text>
+<text x="877" y="282" text-anchor="middle" font-size="13">12</text>
+<text x="40" y="314" font-size="12">committer 日期原时区按月聚合 · 含 merge · 来源 per_month.tsv</text>
+<text x="40" y="337" font-size="12">快照 52aa9478714e3b3ce5b5b05bc3b56d160ec9efa1 · 截止月可能不完整；未覆盖不等于零提交</text>
+</g></svg>

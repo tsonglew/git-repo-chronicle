@@ -35,16 +35,16 @@ head -10 /tmp/<repo>-meta/per_author.tsv  # 谁是核心作者
 
 ```bash
 # 导出结构化数据(推荐:使用 scripts/dump_git_history.sh)
-git log --date=iso-strict --pretty=format:'%H%x09%an%x09%ae%x09%ad%x09%s' > commits.tsv
+git log --pretty=format:'%H%x09%an%x09%ae%x09%cI%x09%s' > commits.tsv
 # 完整日志(含正文,供精读)
-git log --date=iso-strict --pretty=format:'commit %H%nAuthor: %an <%ae>%nDate:   %ad%n%n    %s%n%n%b%n%n---' > commits_full.log
+git log --pretty=format:'commit %H%nAuthor: %an <%ae>%nCommitDate: %cI%n%n    %s%n%n%b%n%n---' > commits_full.log
 ```
 
 处理时记住几点。
 
 - **PR 编号提取**。从提交消息中提取 `#N`,排除误匹配(如 "C# 语法" 里的 #)。规则是优先匹配独立的 `#数字` 词元;合并提交(merge commit)是主要来源,用 `git log --merges` 单独列出核对。
-- **年份口径**。以合入日期(author/commit 日期)为准,不用提交消息里的日期。
-- **时区**。ISO 日期自带偏移(`+0800` 即中国时区),用来推断作者地域。
+- **年份口径**。导出和年度/月度统计统一采用 committer 日期 `%cI` 的原时区年月。它不是 author 日期 `%aI`，也不必然等于 PR 合入时间；需要主线合入节奏时使用 `--first-parent`，或独立按 PR `mergedAt` 作图并明确标注，不能混算。
+- **时区**。ISO 日期保留原偏移（如 `+08:00`）；它不能证明作者所在地或国籍，身份推断须有其他来源。
 - **定位特定功能引入**。用 `git log -S'关键字' --oneline`(字符串变更)或 `git log --grep'关键词'`;单文件历史用 `git log --follow -- <path>`。
 - **主线过滤**。`git log --first-parent` 只保留主分支合入,适合噪音大的仓库。
 
@@ -80,7 +80,46 @@ gh issue view <n> --repo <owner/repo>   # 关键 issue 的正文与评论
 
 ## 4. 论坛讨论
 
-> 先搜 WebSearch「项目名 forum」,先看 README 与官网 footer 的官方论坛链接
+> 先读项目的社区来源配置；没有配置时再看 README、官网 footer 或搜索「项目名 forum」。
+
+### 项目级来源清单
+
+复制 [community-sources.json](../examples/community-sources.json) 到产物目录，填入已核实的论坛、Reddit、Hacker News、发行说明和博客 RSS URL。示例针对本仓库，仅填写可由仓库地址直接确定的 GitHub 地址；未知平台保留 `url: null` 和 `enabled: false`，不能把示例当成已发现的社区。配置是采集清单，由代理或所选采集工具读取，本项目不内置通用论坛爬虫。
+
+每项保留稳定 `id`、`kind`、`url`、`enabled` 与 `notes`。URL 是发现入口，不是论断证据。搜索页、RSS 首页或论坛首页只能帮助定位，最终引用须指向具体帖、评论、发行说明或文章。用户没有选中的来源可禁用，并在方法论写「未纳入」；希望采集但缺地址、权限或正文时写「未获取」。首次发现新的来源时补回清单，下次续写按同一清单复查。
+
+采集逐条记录到 `community.json`（JSON 数组），字段如下。可从 [记录模板](../examples/community-records.json) 开始，模板中的未获取项不能当作真实采集结果。
+
+| 字段 | 约定 |
+|---|---|
+| `source_id` | 对应配置项的 `id` |
+| `url`、`title` | 具体内容的固定链接与标题；未定位到内容时 URL 可为入口或 null |
+| `published_at` | 内容本身发布时间，带时区 ISO 8601；不能用抓取日或 Wayback 存档日代替 |
+| `fetched_at` | 实际读取时间，带时区 ISO 8601 |
+| `status` | `ok` 表示读到可核对正文；`unavailable` 表示未获取 |
+| `excerpt` | 支撑论断的短摘录或明确标注的摘要，并注明作者/评论位置；注意保留语境 |
+| `reason` | 未获取原因，如未配置地址、登录限制、HTTP 404、正文被删、无可用存档 |
+| `snapshot_url` | 可选，实际打开并核对过的快照 URL |
+
+只看搜索摘要、标题或一个高回复数，不能据此写「社区普遍欢迎」「引发反对」或归因开发动机。`status=ok` 的内容必须有来源、可核对正文和已确认的发布时间；日期或正文缺失时先标为 `unavailable`，并说明到底缺什么。一个用户的评论只能说明该用户的观点。
+
+增量采集使用 `published_at`，和 `chronicle_checkpoint.py collect --community community.json` 的输入一致。`unavailable` 项写入 `community-gaps.json`，不作为社区反应证据；有缺口时保留旧的社区时间水位，恢复后才能补采。日期非法的 `ok` 项会导致校验失败，先核实或降级后重跑。旧帖的新评论按评论自身时间建独立记录，不能把整帖的抓取日期当新事件。
+
+### 缺口降级与快照
+
+先试原链接，再按需要尝试站内搜索、镜像或 Wayback；记录尝试过的入口和失败原因，无法获取即停止补写。禁止用模型自行补齐社区反应。
+
+可直接采用以下文案，尖括号替换为实际情况：
+
+> 社区资料未获取。来源为 <平台/URL>，尝试于 <时间>，原因为 <具体错误或缺失字段>，覆盖缺口为 <日期/话题范围>。本章仅依据已核实的代码与发行记录，不据此判断社区态度。
+
+> 已获取 <N> 条可核对来源，范围为 <日期区间>；<来源/页码> 未获取，原因为 <原因>。下文观点仅对应所引用的作者或帖子，不能代表整个社区。
+
+Wayback 发现入口可写 `https://web.archive.org/web/*/<原始URL>`，但通配入口不是证据。真正引用时记录实际快照地址 `https://web.archive.org/web/<快照时间>/<原始URL>`、原始 URL、原文发布日期和存档时间；删除帖只有摘要缓存而无正文时仍标未获取。存档时间不能代替原帖时间，也不能据此推导当时的回复数。
+
+交付前逐句检查所有社区反应与因果判断：有可核对的内容链接和对应记录，或在该处明确写「未获取」并移除无证据判断。文末同时列出来源清单、已获取范围和缺口，空数组只代表无记录，不代表社区没有发声。
+
+### 发现与读取帖子
 
 定位路径按下面的顺序试。
 
@@ -123,18 +162,18 @@ GitHub 自带 feed,无需第三方。
 
 把 git 作者与论坛/issue 里的身份对上,这是人物图鉴的关键。
 
-- **邮箱域名**。`development@suprcode.com` 这类域名证明作者与某站、某项目同属一人或一团队。
-- **时区偏移**。提交日期偏移 +0800 推断中国时区开发者;跨多年偏移稳定者是常驻作者。
+- **邮箱域名**。共享邮箱域名只能提供关联线索，不能证明两条署名属于同一人或同一团队。优先采用项目维护的 `.mailmap` 或作者本人确认的关联。
+- **时区偏移**。提交日期偏移只说明当次记录使用的时区，不能单独判断国籍、所在地或是否常驻；相同偏移不等于同一作者。
 - **署名昵称**。论坛 ID 与 git 作者名相近(如论坛 "AndyF" 与提交者 "AndyF")。
-- **committer 与 author**。两者不同时,说明代码被人代为合入,可推测协作关系。
+- **committer 与 author**。两者不同时可能是代为合入、机器人操作或历史重写，须结合提交说明和 PR 记录核对，不能仅凭字段推导协作关系。
 - 所有推断标注「[推断:…未证实]」,写明依据;无法对上的身份归入"匿名贡献者"。
 
 ## 大仓库策略(超过 5000 条提交)
 
-- 克隆阶段就用 blob 过滤,避免克隆超时。`git clone --filter=blob:none --no-checkout <url>` 只拉提交历史与目录树,文件内容按需下载,编年史写作不需要 blob。
+- 克隆阶段可用 blob 过滤，减少初次传输。`git clone --filter=blob:none --no-checkout <url>` 先取得提交历史与目录树；日志统计无需 blob，核对行为变更、历史文件锚点和代码存活时再按需下载文件内容，并记录缺失或下载失败。
 - 主线优先。`git log --first-parent` 砍掉分支噪音。
 - 窗口精读。以 release/tag 为中心,精读每个里程碑前后约 30 天的提交;窗口之间用月度聚合(`git log --date=format:'%Y-%m'` 统计)一笔带过。
-- 月度代表性提交。按月取前几条 merge 提交做窗口素材,命令是 `git log --first-parent --merges --date=format:'%Y-%m' --pretty=format:'%ad %s' | grep '^2026-05'`,只挑与当月主题相关的展开,其余当背景。
+- 月度代表性提交。按月取 merge 提交做窗口素材，命令是 `git log --first-parent --merges --format='%cI %s' | grep '^2026-05'`，按 committer 日期的原时区年月筛选；只挑与当月主题相关的展开，其余当背景。
 - 明确口径。方法论注记中写明"仅精读 N 个里程碑窗口,其余按月聚合"。
 - release 列表(gh 或 tags)在超大仓库里比提交列表更能代表"官方叙事",让 release 成为章节骨架。
 
