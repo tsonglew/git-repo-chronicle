@@ -1,0 +1,29 @@
+mode: thematic
+title: "示例·江湖守门人札记(占位)"
+lang: zh
+art_style: chinese-wuxia-horror
+sources_note: "虚构占位示例,仅演示主题成书大纲格式;非影之刃零官方内容。"
+chapters:
+  - id: weeping-vale
+    title: 悲泣溪谷
+    type: region
+    entries:
+      - id: can-gang
+        title: 痴狂暴徒·残钢
+        role: 流程教学
+        location: 红丝线障壁之后
+        sources: []
+      - id: zhui-ming
+        title: 「组织」猎杀者·追命
+        role: 章节 Boss
+        location: 悲泣溪谷主线必遇
+        sources: []
+  - id: village-of-lu
+    title: 陆家村
+    type: region
+    entries:
+      - id: zhuo-bi
+        title: 守门人·拙壁
+        role: 游荡
+        location: 老根头后再过石桥
+        sources: []
