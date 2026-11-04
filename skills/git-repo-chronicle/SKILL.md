@@ -1,8 +1,8 @@
 ---
 name: git-repo-chronicle
-description: 为有长期历史的 GitHub 项目撰写《项目开发编年史》。This skill should be used when the user asks to "写项目编年史", "整理项目开发历史", "做一部项目开发编年史", "项目开发史", "从零到一的七年", "把提交历史整理成编年史", "write a project chronicle", "chronicle this repo", or wants a narrative history of a codebase that combines commits, releases, issues, forum discussions, RSS, news, and the historical context of the era.
+description: 为有长期历史的 GitHub 项目撰写《项目开发编年史》,也支持主题成书(如 Boss 图鉴)并复用 EPUB/在线书与插图预设。This skill should be used when the user asks to "写项目编年史", "整理项目开发历史", "做一部项目开发编年史", "项目开发史", "从零到一的七年", "把提交历史整理成编年史", "write a project chronicle", "chronicle this repo", "主题成书", "Boss 图鉴成书", "thematic book", "non-git book", or wants a narrative history of a codebase that combines commits, releases, issues, forum discussions, RSS, news, and the historical context of the era — or an illustrated topical Markdown book published via the same EPUB/site pipeline.
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # 项目开发编年史 (git-repo-chronicle)
@@ -17,6 +17,9 @@ metadata:
 - 用户想理解一个项目为什么这样演进,比如架构决策、社区影响、时代背景、停更与复活。
 - 用户已有编年史,要求续写新一年、新 release 或只补上次截点之后的历史。此时先读 `references/incremental.md`,沿用旧章口吻并追加新章或近况。
 - 产出为一份 Markdown 长文,含表格、时间线、附录,写入用户指定的路径。默认写到 `<仓库>/docs/notes/项目开发编年史-从零到一.md`,只读仓库写到当前目录。
+- **主题成书:** 用户要做 Boss 图鉴、攻略合集、专题手册等「无 git 提交主线」的书,或明确说 `thematic` /「主题成书」。先读 `references/thematic-book.md`,不要套用下面的 git 七条铁律;插图预设见 `references/illustrations.md`(如 `chinese-wuxia-horror`)。出版仍用 `references/publishing.md`。
+
+> **模式分流:** 默认 `mode=git-chronicle`,必须遵守下列七条。若已确认 `mode=thematic`,改读 `references/thematic-book.md` 的主题书铁律,并跳过本文件阶段 1 的 git 采集与本章校验中的哈希/提交数检查。
 
 ## 七条铁律(违反任何一条都要重写)
 
@@ -65,7 +68,8 @@ metadata:
 | 提交粒度 | 逐条 | 逐条、按批次 |
 | 数据源 | 全部六类 | 全部、仅 git 提交、指定类别 |
 | Mermaid 配图 | 开 | 开、关 |
-| 插图风格 | 手绘编年史风 | 用户自定描述(如水墨、版画、赛博) |
+| 写作模式(内容) | git-chronicle | git-chronicle、thematic(主题成书,见 thematic-book.md) |
+| 插图风格 | 手绘编年史风(`chronicle-ink`) | 预设 id(如 `chinese-wuxia-horror`)或用户自定描述 |
 | 插图数量 | 封面加关键章节 | 仅封面、每章一张 |
 | 作者署名 | 保留 | 保留、匿名化 |
 | 产物署名 footer | 保留 | 保留、去掉(powered by 链接) |
@@ -222,6 +226,7 @@ metadata:
 
 ### Reference Files
 
+- **`references/thematic-book.md`** 主题成书模式(无 git 主线时的大纲、条目模板、校验与出版分流)。
 - **`references/chronicle-structure.md`** 编年史结构模板与写作风格,从章节骨架到动机链,含题头、全景数字表、人物图鉴、按年章节、提交行模板、论坛回声与附录。
 - **`references/data-sources.md`** 六类数据源采集手册,命令、实战坑与大仓库策略,含 git 提交、release/issue/PR、论坛、RSS、新闻与身份比对。
 - **`references/diagrams.md`** 配图规范,Mermaid 图类型、写法示例、导出与校验。
@@ -243,3 +248,4 @@ metadata:
 - **`examples/chronicle-excerpt.md`** 编年史片段示例(虚构项目),含题头、章节、提交行、论坛回声与附录的完整格式示范。
 - **`examples/repository-chronicle.md`** 当前项目真实历史样章,展示三幕梗概、章节类型、活动图、贡献者指纹与历史代码锚点。
 - **`examples/community-sources.json`** 项目级社区来源配置样例,使用前替换为目标项目 URL。
+- **`examples/thematic-boss-book/`** 主题成书占位示例(大纲 + 两章 stub + `chinese-wuxia-horror` 画风约定)。

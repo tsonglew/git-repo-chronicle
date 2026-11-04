@@ -48,6 +48,13 @@ https://openclaw-chronicle.vercel.app
 
 > 给 https://github.com/xxx/yyy 写一部项目开发编年史,中文,输出到 docs/notes/
 
+也可以走**主题成书**(无 git 提交主线),例如 Boss 图鉴或专题手册,复用同一套 EPUB/在线书与插图流水线:
+
+> 用主题成书模式写一本 Boss 图鉴,画风 chinese-wuxia-horror(中式武侠恐怖),按区域分章,输出 Markdown;需要再转 EPUB。
+
+分流说明见 `skills/git-repo-chronicle/references/thematic-book.md`,画风预设见 `references/illustrations.md`,占位示例在 `examples/thematic-boss-book/`。默认仍是 git 项目编年史。
+
+
 或者这句。
 
 > 用 git-repo-chronicle 整理这个仓库的七年开发史,结合 release、issue 和论坛讨论,结论先行,每条提交可溯源
@@ -134,6 +141,7 @@ OpenClaw 编年史的在线书,由本 skill 生成并部署到 Vercel。
 └── skills/git-repo-chronicle/
     ├── SKILL.md                      核心工作流与校验清单
     ├── references/
+    │   ├── thematic-book.md          主题成书模式
     │   ├── chronicle-structure.md    编年史结构模板与写作风格
     │   ├── data-sources.md           六类数据源、社区配置与缺口降级
     │   ├── diagrams.md               架构图与章首活动图

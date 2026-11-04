@@ -14,6 +14,25 @@ Hand-drawn illustration in the style of a vintage chronicle book. Ink sketch wit
 
 用户给了自己的风格描述时(如"水墨风""版画风""赛博朋克"),用自己的描述替换风格前缀,主题部分照旧。风格定下后全篇统一,不要每章换一种。
 
+## 风格预设 (art_style)
+
+主题成书或用户点名预设时,用下表的**完整前缀**替换默认手绘编年史前缀。配置项名建议写 `art_style: <id>`(见 `thematic-book.md`)。
+
+| id | 中文 | 前缀(英文,接主题描述) |
+|---|---|---|
+| `chronicle-ink` | 手绘编年史(默认) | `Hand-drawn illustration in the style of a vintage chronicle book. Ink sketch with light watercolor wash, aged paper texture, muted sepia and indigo palette, storytelling scene, atmospheric, no text, no watermark, no logo.` |
+| `chinese-wuxia-horror` | 中式武侠恐怖 | `Chinese wuxia horror illustration, ink wash and cold fog, vermilion blood accents, broken temple or ancient Jianghu town at night, masks and puppets, eerie atmosphere, no modern UI, no neon, no cute anime, no text, no watermark, no logo.` |
+| `shui-mo` | 水墨(简) | `Traditional Chinese ink wash painting, sparse brushwork, misty mountains, limited black ink on rice paper, no text, no watermark.` |
+| `woodcut` | 版画(简) | `Woodcut print illustration, bold carved lines, limited ink palette, storytelling scene, no text, no watermark.` |
+
+选用示例:
+
+```bash
+STYLE='Chinese wuxia horror illustration, ink wash and cold fog, vermilion blood accents, broken temple or ancient Jianghu town at night, masks and puppets, eerie atmosphere, no modern UI, no neon, no cute anime, no text, no watermark, no logo.'
+scripts/generate_illustration.sh "$STYLE Gatekeeper under a stone bridge in cold fog" docs/notes/images/zhuo-bi.png
+```
+
+
 主题描述接在风格前缀后面,写具体场景。主题按项目实际写,英文优先,中文亦可。用户指定了主题清单,就按用户的画,不用下面的默认清单。
 
 ## 配置
